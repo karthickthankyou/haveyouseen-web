@@ -155,7 +155,7 @@ export type CreateApprovedReportInput = {
 
 export type CreateCaseInput = {
   contact: Array<Scalars['String']>
-  missingPersonId: Scalars['Int']
+  missingPerson: CreateMissingPersonInput
   status: Status
 }
 
@@ -170,7 +170,7 @@ export type CreateMissingPersonInput = {
   description: Scalars['String']
   displayName: Scalars['String']
   dob?: InputMaybe<Scalars['DateTime']>
-  gender?: InputMaybe<Gender>
+  gender: Gender
   height?: InputMaybe<Scalars['Int']>
   images: Array<Scalars['String']>
   missingSince?: InputMaybe<Scalars['DateTime']>
@@ -185,6 +185,15 @@ export type CreateOfficerInput = {
 export type CreateReportInput = {
   audio?: InputMaybe<Scalars['String']>
   caseId?: InputMaybe<Scalars['Int']>
+  description: Scalars['String']
+  locationId?: InputMaybe<Scalars['Int']>
+  time?: InputMaybe<Scalars['DateTime']>
+  type: ReportType
+  witnessId?: InputMaybe<Scalars['String']>
+}
+
+export type CreateReportInputWithoutCaseId = {
+  audio?: InputMaybe<Scalars['String']>
   description: Scalars['String']
   locationId?: InputMaybe<Scalars['Int']>
   time?: InputMaybe<Scalars['DateTime']>
@@ -348,7 +357,7 @@ export type MissingPerson = {
   description: Scalars['String']
   displayName: Scalars['String']
   dob?: Maybe<Scalars['DateTime']>
-  gender?: Maybe<Gender>
+  gender: Gender
   height?: Maybe<Scalars['Int']>
   id: Scalars['Int']
   images: Array<Scalars['String']>
@@ -424,6 +433,7 @@ export type Mutation = {
   createMissingPerson: MissingPerson
   createOfficer: Officer
   createReport: Report
+  createReports: Case
   createWitness: Witness
   login: LoginOutput
   logout: Scalars['Boolean']
@@ -439,7 +449,6 @@ export type Mutation = {
   setAdmin: Scalars['Boolean']
   setRole: Scalars['Boolean']
   updateApprovedReport: ApprovedReport
-  updateCase: Case
   updateLocation: Location
   updateMissingPerson: MissingPerson
   updateOfficer: Officer
@@ -469,6 +478,11 @@ export type MutationCreateOfficerArgs = {
 
 export type MutationCreateReportArgs = {
   createReportInput: CreateReportInput
+}
+
+export type MutationCreateReportsArgs = {
+  caseId: Scalars['Int']
+  createReportsInput: Array<CreateReportInputWithoutCaseId>
 }
 
 export type MutationCreateWitnessArgs = {
@@ -525,10 +539,6 @@ export type MutationSetRoleArgs = {
 
 export type MutationUpdateApprovedReportArgs = {
   updateApprovedReportInput: UpdateApprovedReportInput
-}
-
-export type MutationUpdateCaseArgs = {
-  updateCaseInput: UpdateCaseInput
 }
 
 export type MutationUpdateLocationArgs = {
@@ -607,6 +617,7 @@ export type Query = {
   reports: Array<Report>
   searchCases: Array<Report>
   witness: Witness
+  witnessMe: Witness
   witnesses: Array<Witness>
 }
 
@@ -698,6 +709,10 @@ export type QuerySearchCasesArgs = {
 }
 
 export type QueryWitnessArgs = {
+  where?: InputMaybe<WitnessWhereUniqueInput>
+}
+
+export type QueryWitnessMeArgs = {
   where?: InputMaybe<WitnessWhereUniqueInput>
 }
 
@@ -891,13 +906,6 @@ export type UpdateApprovedReportInput = {
   description?: InputMaybe<Scalars['String']>
   id: Scalars['Int']
   officerId?: InputMaybe<Scalars['String']>
-}
-
-export type UpdateCaseInput = {
-  contact?: InputMaybe<Array<Scalars['String']>>
-  id: Scalars['Int']
-  missingPersonId?: InputMaybe<Scalars['Int']>
-  status?: InputMaybe<Status>
 }
 
 export type UpdateLocationInput = {

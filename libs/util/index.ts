@@ -2,6 +2,7 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import { format } from 'date-fns'
 import { LatLng } from '@haveyouseen-org/types'
+import { CaseQuery, ReportType } from '@haveyouseen-org/network/src/generated'
 
 import { notification$ } from './subjects'
 import { storage } from '@haveyouseen-org/network/src/config/firebase'
@@ -158,4 +159,19 @@ export const MAP_MODE = {
   SEARCH: 'SEARCH',
   CASE: 'CASE',
   ADD_CASE: 'ADD_CASE',
+}
+
+export const convertReportsToCoordinates = (
+  reports?: NonNullable<CaseQuery['case']>['reports'],
+): [number, number][] => {
+  // Todo: Ugly type assertion hack.
+  return (
+    reports
+      ?.filter((report) => report.location)
+      .filter((report) => report.type === ReportType.Sighting)
+      .map((report) => [
+        report.location!.longitude,
+        report.location!.latitude,
+      ]) || []
+  )
 }

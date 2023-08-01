@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { signUpFormSchema } from './signUp'
+import { registerFormSchema } from './signUp'
 
-export const loginFormSchema = signUpFormSchema.pick({
+export const loginFormSchema = registerFormSchema.pick({
   email: true,
   password: true,
 })

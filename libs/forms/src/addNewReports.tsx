@@ -5,7 +5,7 @@ import { newReportFormSchema } from './addNewCase'
 
 export const addNewReportsFormSchema = z.object({
   reports: z.array(newReportFormSchema).min(1, 'Add atleast one report.'),
-  caseId: z.string(),
+  caseId: z.number(),
 })
 
 export type FormTypeAddNewReports = z.infer<typeof addNewReportsFormSchema>

@@ -10,7 +10,10 @@ import { ReportsService } from './reports.service'
 import { Report } from './entities/report.entity'
 import { Location } from '../locations/entities/location.entity'
 import { FindManyReportArgs, FindUniqueReportArgs } from './dto/find.args'
-import { CreateReportInput } from './dto/create-report.input'
+import {
+  CreateReportInput,
+  CreateReportInputWithoutCaseId,
+} from './dto/create-report.input'
 import { UpdateReportInput } from './dto/update-report.input'
 import { AllowAuthenticated } from 'src/common/decorators/auth/auth.decorator'
 import { PrismaService } from 'src/common/prisma/prisma.service'
@@ -29,6 +32,25 @@ export class ReportsResolver {
   @Mutation(() => Report)
   createReport(@Args('createReportInput') args: CreateReportInput) {
     return this.reportsService.create(args)
+  }
+
+  @AllowAuthenticated()
+  @Mutation(() => Case)
+  createReports(
+    @Args('createReportsInput', {
+      type: () => [CreateReportInputWithoutCaseId],
+    })
+    reports: [CreateReportInputWithoutCaseId],
+    @Args('caseId') caseId: number,
+  ) {
+    return this.prisma.case.update({
+      where: { id: caseId },
+      data: {
+        reports: {
+          create: reports,
+        },
+      },
+    })
   }
 
   @Query(() => [Report], { name: 'reports' })

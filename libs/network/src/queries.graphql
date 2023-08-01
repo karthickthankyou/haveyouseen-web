@@ -75,8 +75,8 @@ query officerMe {
   }
 }
 
-query witness($where: WitnessWhereUniqueInput!) {
-  witness(where: $where) {
+query witnessMe {
+  witnessMe {
     uid
     createdAt
     name
@@ -118,5 +118,14 @@ mutation createApprovedReport(
 ) {
   createApprovedReport(createApprovedReportInput: $createApprovedReportInput) {
     description
+  }
+}
+
+mutation CreateReports(
+  $createReportsInput: [CreateReportInputWithoutCaseId!]!
+  $caseId: Int!
+) {
+  createReports(createReportsInput: $createReportsInput, caseId: $caseId) {
+    id
   }
 }

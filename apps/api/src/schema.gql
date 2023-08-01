@@ -77,7 +77,7 @@ enum Status {
 
 type MissingPerson {
   dob: DateTime
-  gender: Gender
+  gender: Gender!
   missingSince: DateTime
   height: Int
   weight: Int
@@ -151,6 +151,7 @@ type RefreshTokenOutput {
 type Query {
   witnesses(where: WitnessWhereInput, orderBy: [WitnessOrderByWithRelationInput!], cursor: WitnessWhereUniqueInput, take: Int, skip: Int, distinct: [WitnessScalarFieldEnum!]): [Witness!]!
   witness(where: WitnessWhereUniqueInput): Witness!
+  witnessMe(where: WitnessWhereUniqueInput): Witness!
   approvedReports(where: ApprovedReportWhereInput, orderBy: [ApprovedReportOrderByWithRelationInput!], cursor: ApprovedReportWhereUniqueInput, take: Int, skip: Int, distinct: [ApprovedReportScalarFieldEnum!]): [ApprovedReport!]!
   approvedReport(where: ApprovedReportWhereUniqueInput): ApprovedReport!
   cases(where: CaseWhereInput, orderBy: [CaseOrderByWithRelationInput!], cursor: CaseWhereUniqueInput, take: Int, skip: Int, distinct: [CaseScalarFieldEnum!]): [Case!]!
@@ -608,7 +609,6 @@ type Mutation {
   updateApprovedReport(updateApprovedReportInput: UpdateApprovedReportInput!): ApprovedReport!
   removeApprovedReport(where: ApprovedReportWhereUniqueInput): ApprovedReport!
   createCase(createCaseInput: CreateCaseInput!): Case!
-  updateCase(updateCaseInput: UpdateCaseInput!): Case!
   removeCase(where: CaseWhereUniqueInput): Case!
   createLocation(createLocationInput: CreateLocationInput!): Location!
   updateLocation(updateLocationInput: UpdateLocationInput!): Location!
@@ -620,6 +620,7 @@ type Mutation {
   updateOfficer(updateOfficerInput: UpdateOfficerInput!): Officer!
   removeOfficer(where: OfficerWhereUniqueInput): Officer!
   createReport(createReportInput: CreateReportInput!): Report!
+  createReports(createReportsInput: [CreateReportInputWithoutCaseId!]!, caseId: Int!): Case!
   updateReport(updateReportInput: UpdateReportInput!): Report!
   removeReport(where: ReportWhereUniqueInput): Report!
 }
@@ -674,15 +675,20 @@ input UpdateApprovedReportInput {
 
 input CreateCaseInput {
   status: Status!
-  missingPersonId: Int!
   contact: [String!]!
+  missingPerson: CreateMissingPersonInput!
 }
 
-input UpdateCaseInput {
-  status: Status
-  missingPersonId: Int
-  contact: [String!]
-  id: Int!
+input CreateMissingPersonInput {
+  dob: DateTime
+  gender: Gender!
+  missingSince: DateTime
+  height: Int
+  weight: Int
+  bodyType: BodyType
+  displayName: String!
+  images: [String!]!
+  description: String!
 }
 
 input CreateLocationInput {
@@ -696,18 +702,6 @@ input UpdateLocationInput {
   longitude: Int
   address: String
   id: Int!
-}
-
-input CreateMissingPersonInput {
-  dob: DateTime
-  gender: Gender
-  missingSince: DateTime
-  height: Int
-  weight: Int
-  bodyType: BodyType
-  displayName: String!
-  images: [String!]!
-  description: String!
 }
 
 input UpdateMissingPersonInput {
@@ -738,6 +732,15 @@ input CreateReportInput {
   locationId: Int
   type: ReportType!
   caseId: Int
+  witnessId: String
+  audio: String
+  description: String!
+}
+
+input CreateReportInputWithoutCaseId {
+  time: DateTime
+  locationId: Int
+  type: ReportType!
   witnessId: String
   audio: String
   description: String!

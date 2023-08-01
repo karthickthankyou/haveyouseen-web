@@ -10,7 +10,5 @@ export default {
 const Template: ComponentStory<typeof Brand> = (args) => <Brand {...args} />
 
 export const Primary = Template.bind({})
-Primary.args = {
-  shortForm: true,
-}
+Primary.args = {}
 Primary.parameters = {}

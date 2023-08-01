@@ -11,9 +11,13 @@ import { Witness } from './entities/witness.entity'
 import { FindManyWitnessArgs, FindUniqueWitnessArgs } from './dto/find.args'
 import { CreateWitnessInput } from './dto/create-witness.input'
 import { UpdateWitnessInput } from './dto/update-witness.input'
-import { AllowAuthenticated } from 'src/common/decorators/auth/auth.decorator'
+import {
+  AllowAuthenticated,
+  GetUser,
+} from 'src/common/decorators/auth/auth.decorator'
 import { PrismaService } from 'src/common/prisma/prisma.service'
 import { Report } from '../reports/entities/report.entity'
+import { GetUserType } from 'src/common/types'
 
 @Resolver(() => Witness)
 export class WitnessesResolver {
@@ -35,6 +39,12 @@ export class WitnessesResolver {
   @Query(() => Witness, { name: 'witness' })
   findOne(@Args() args: FindUniqueWitnessArgs) {
     return this.witnessesService.findOne(args)
+  }
+
+  @AllowAuthenticated()
+  @Query(() => Witness, { name: 'witnessMe' })
+  witnessMe(@Args() args: FindUniqueWitnessArgs, @GetUser() user: GetUserType) {
+    return this.witnessesService.findOne({ where: { uid: user.uid } })
   }
 
   @AllowAuthenticated()

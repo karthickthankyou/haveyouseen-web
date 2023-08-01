@@ -23,7 +23,7 @@ export class MissingPerson
   images: string[]
   @Field({ nullable: true })
   dob: Date
-  @Field(() => $Enums.Gender, { nullable: true })
+  @Field(() => $Enums.Gender)
   gender: $Enums.Gender
   description: string
   @Field({ nullable: true })

@@ -40,11 +40,11 @@ export class CasesResolver {
     return this.casesService.findOne(args)
   }
 
-  @AllowAuthenticated()
-  @Mutation(() => Case)
-  updateCase(@Args('updateCaseInput') args: UpdateCaseInput) {
-    return this.casesService.update(args)
-  }
+  //   @AllowAuthenticated()
+  //   @Mutation(() => Case)
+  //   updateCase(@Args('updateCaseInput') args: UpdateCaseInput) {
+  //     return this.casesService.update(args)
+  //   }
 
   @Query(() => [Report])
   searchCases(

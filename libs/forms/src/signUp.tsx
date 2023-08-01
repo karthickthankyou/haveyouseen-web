@@ -2,15 +2,17 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-export const signUpFormSchema = z.object({
+export const registerFormSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
   displayName: z.string().optional(),
+  photoURL: z.string().optional(),
+  rememberMe: z.boolean().optional(),
 })
 
-export type FormTypeSignUp = z.infer<typeof signUpFormSchema>
+export type FormTypeRegister = z.infer<typeof registerFormSchema>
 
-export const useFormSignup = () =>
-  useForm<FormTypeSignUp>({
-    resolver: zodResolver(signUpFormSchema),
+export const useFormRegister = () =>
+  useForm<FormTypeRegister>({
+    resolver: zodResolver(registerFormSchema),
   })

@@ -7,9 +7,9 @@ import { UpdateCaseInput } from './dto/update-case.input'
 @Injectable()
 export class CasesService {
   constructor(private readonly prisma: PrismaService) {}
-  create(createCaseInput: CreateCaseInput) {
+  create({ missingPerson, ...args }: CreateCaseInput) {
     return this.prisma.case.create({
-      data: createCaseInput,
+      data: { ...args, missingPerson: { create: missingPerson } },
     })
   }
 
@@ -22,7 +22,7 @@ export class CasesService {
   }
 
   update(updateCaseInput: UpdateCaseInput) {
-    const { id, ...data } = updateCaseInput
+    const { id, missingPerson, ...data } = updateCaseInput
     return this.prisma.case.update({
       where: { id },
       data: data,

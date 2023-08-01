@@ -156,7 +156,7 @@ export type CreateApprovedReportInput = {
 
 export type CreateCaseInput = {
   contact: Array<Scalars['String']>
-  missingPersonId: Scalars['Int']
+  missingPerson: CreateMissingPersonInput
   status: Status
 }
 
@@ -171,7 +171,7 @@ export type CreateMissingPersonInput = {
   description: Scalars['String']
   displayName: Scalars['String']
   dob?: InputMaybe<Scalars['DateTime']>
-  gender?: InputMaybe<Gender>
+  gender: Gender
   height?: InputMaybe<Scalars['Int']>
   images: Array<Scalars['String']>
   missingSince?: InputMaybe<Scalars['DateTime']>
@@ -186,6 +186,15 @@ export type CreateOfficerInput = {
 export type CreateReportInput = {
   audio?: InputMaybe<Scalars['String']>
   caseId?: InputMaybe<Scalars['Int']>
+  description: Scalars['String']
+  locationId?: InputMaybe<Scalars['Int']>
+  time?: InputMaybe<Scalars['DateTime']>
+  type: ReportType
+  witnessId?: InputMaybe<Scalars['String']>
+}
+
+export type CreateReportInputWithoutCaseId = {
+  audio?: InputMaybe<Scalars['String']>
   description: Scalars['String']
   locationId?: InputMaybe<Scalars['Int']>
   time?: InputMaybe<Scalars['DateTime']>
@@ -349,7 +358,7 @@ export type MissingPerson = {
   description: Scalars['String']
   displayName: Scalars['String']
   dob?: Maybe<Scalars['DateTime']>
-  gender?: Maybe<Gender>
+  gender: Gender
   height?: Maybe<Scalars['Int']>
   id: Scalars['Int']
   images: Array<Scalars['String']>
@@ -425,6 +434,7 @@ export type Mutation = {
   createMissingPerson: MissingPerson
   createOfficer: Officer
   createReport: Report
+  createReports: Case
   createWitness: Witness
   login: LoginOutput
   logout: Scalars['Boolean']
@@ -440,7 +450,6 @@ export type Mutation = {
   setAdmin: Scalars['Boolean']
   setRole: Scalars['Boolean']
   updateApprovedReport: ApprovedReport
-  updateCase: Case
   updateLocation: Location
   updateMissingPerson: MissingPerson
   updateOfficer: Officer
@@ -470,6 +479,11 @@ export type MutationCreateOfficerArgs = {
 
 export type MutationCreateReportArgs = {
   createReportInput: CreateReportInput
+}
+
+export type MutationCreateReportsArgs = {
+  caseId: Scalars['Int']
+  createReportsInput: Array<CreateReportInputWithoutCaseId>
 }
 
 export type MutationCreateWitnessArgs = {
@@ -526,10 +540,6 @@ export type MutationSetRoleArgs = {
 
 export type MutationUpdateApprovedReportArgs = {
   updateApprovedReportInput: UpdateApprovedReportInput
-}
-
-export type MutationUpdateCaseArgs = {
-  updateCaseInput: UpdateCaseInput
 }
 
 export type MutationUpdateLocationArgs = {
@@ -608,6 +618,7 @@ export type Query = {
   reports: Array<Report>
   searchCases: Array<Report>
   witness: Witness
+  witnessMe: Witness
   witnesses: Array<Witness>
 }
 
@@ -699,6 +710,10 @@ export type QuerySearchCasesArgs = {
 }
 
 export type QueryWitnessArgs = {
+  where?: InputMaybe<WitnessWhereUniqueInput>
+}
+
+export type QueryWitnessMeArgs = {
   where?: InputMaybe<WitnessWhereUniqueInput>
 }
 
@@ -894,13 +909,6 @@ export type UpdateApprovedReportInput = {
   officerId?: InputMaybe<Scalars['String']>
 }
 
-export type UpdateCaseInput = {
-  contact?: InputMaybe<Array<Scalars['String']>>
-  id: Scalars['Int']
-  missingPersonId?: InputMaybe<Scalars['Int']>
-  status?: InputMaybe<Status>
-}
-
 export type UpdateLocationInput = {
   address?: InputMaybe<Scalars['String']>
   id: Scalars['Int']
@@ -1019,7 +1027,7 @@ export type SearchCasesQuery = {
         __typename?: 'MissingPerson'
         images: Array<string>
         displayName: string
-        gender?: Gender | null
+        gender: Gender
       }
     }
     location: {
@@ -1047,7 +1055,7 @@ export type CaseQuery = {
       displayName: string
       description: string
       missingSince?: any | null
-      gender?: Gender | null
+      gender: Gender
       dob?: any | null
       height?: number | null
       weight?: number | null
@@ -1086,13 +1094,11 @@ export type OfficerMeQuery = {
   }
 }
 
-export type WitnessQueryVariables = Exact<{
-  where: WitnessWhereUniqueInput
-}>
+export type WitnessMeQueryVariables = Exact<{ [key: string]: never }>
 
-export type WitnessQuery = {
+export type WitnessMeQuery = {
   __typename?: 'Query'
-  witness: {
+  witnessMe: {
     __typename?: 'Witness'
     uid?: string | null
     createdAt: any
@@ -1145,13 +1151,25 @@ export type CreateApprovedReportMutation = {
   createApprovedReport: { __typename?: 'ApprovedReport'; description: string }
 }
 
+export type CreateReportsMutationVariables = Exact<{
+  createReportsInput:
+    | Array<CreateReportInputWithoutCaseId>
+    | CreateReportInputWithoutCaseId
+  caseId: Scalars['Int']
+}>
+
+export type CreateReportsMutation = {
+  __typename?: 'Mutation'
+  createReports: { __typename?: 'Case'; id: number }
+}
+
 export const namedOperations = {
   Query: {
     reports: 'reports',
     searchCases: 'searchCases',
     case: 'case',
     officerMe: 'officerMe',
-    witness: 'witness',
+    witnessMe: 'witnessMe',
     unapprovedReports: 'unapprovedReports',
   },
   Mutation: {
@@ -1159,6 +1177,7 @@ export const namedOperations = {
     createCase: 'createCase',
     createOfficer: 'createOfficer',
     createApprovedReport: 'createApprovedReport',
+    CreateReports: 'CreateReports',
   },
 }
 
@@ -1506,9 +1525,9 @@ export type OfficerMeQueryResult = Apollo.QueryResult<
   OfficerMeQuery,
   OfficerMeQueryVariables
 >
-export const WitnessDocument = /*#__PURE__*/ gql`
-  query witness($where: WitnessWhereUniqueInput!) {
-    witness(where: $where) {
+export const WitnessMeDocument = /*#__PURE__*/ gql`
+  query witnessMe {
+    witnessMe {
       uid
       createdAt
       name
@@ -1518,47 +1537,51 @@ export const WitnessDocument = /*#__PURE__*/ gql`
 `
 
 /**
- * __useWitnessQuery__
+ * __useWitnessMeQuery__
  *
- * To run a query within a React component, call `useWitnessQuery` and pass it any options that fit your needs.
- * When your component renders, `useWitnessQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useWitnessMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWitnessMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useWitnessQuery({
+ * const { data, loading, error } = useWitnessMeQuery({
  *   variables: {
- *      where: // value for 'where'
  *   },
  * });
  */
-export function useWitnessQuery(
-  baseOptions: Apollo.QueryHookOptions<WitnessQuery, WitnessQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<WitnessQuery, WitnessQueryVariables>(
-    WitnessDocument,
-    options,
-  )
-}
-export function useWitnessLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    WitnessQuery,
-    WitnessQueryVariables
+export function useWitnessMeQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    WitnessMeQuery,
+    WitnessMeQueryVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<WitnessQuery, WitnessQueryVariables>(
-    WitnessDocument,
+  return Apollo.useQuery<WitnessMeQuery, WitnessMeQueryVariables>(
+    WitnessMeDocument,
     options,
   )
 }
-export type WitnessQueryHookResult = ReturnType<typeof useWitnessQuery>
-export type WitnessLazyQueryHookResult = ReturnType<typeof useWitnessLazyQuery>
-export type WitnessQueryResult = Apollo.QueryResult<
-  WitnessQuery,
-  WitnessQueryVariables
+export function useWitnessMeLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    WitnessMeQuery,
+    WitnessMeQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<WitnessMeQuery, WitnessMeQueryVariables>(
+    WitnessMeDocument,
+    options,
+  )
+}
+export type WitnessMeQueryHookResult = ReturnType<typeof useWitnessMeQuery>
+export type WitnessMeLazyQueryHookResult = ReturnType<
+  typeof useWitnessMeLazyQuery
+>
+export type WitnessMeQueryResult = Apollo.QueryResult<
+  WitnessMeQuery,
+  WitnessMeQueryVariables
 >
 export const CreateOfficerDocument = /*#__PURE__*/ gql`
   mutation createOfficer($createOfficerInput: CreateOfficerInput!) {
@@ -1738,4 +1761,58 @@ export type CreateApprovedReportMutationResult =
 export type CreateApprovedReportMutationOptions = Apollo.BaseMutationOptions<
   CreateApprovedReportMutation,
   CreateApprovedReportMutationVariables
+>
+export const CreateReportsDocument = /*#__PURE__*/ gql`
+  mutation CreateReports(
+    $createReportsInput: [CreateReportInputWithoutCaseId!]!
+    $caseId: Int!
+  ) {
+    createReports(createReportsInput: $createReportsInput, caseId: $caseId) {
+      id
+    }
+  }
+`
+export type CreateReportsMutationFn = Apollo.MutationFunction<
+  CreateReportsMutation,
+  CreateReportsMutationVariables
+>
+
+/**
+ * __useCreateReportsMutation__
+ *
+ * To run a mutation, you first call `useCreateReportsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateReportsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createReportsMutation, { data, loading, error }] = useCreateReportsMutation({
+ *   variables: {
+ *      createReportsInput: // value for 'createReportsInput'
+ *      caseId: // value for 'caseId'
+ *   },
+ * });
+ */
+export function useCreateReportsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateReportsMutation,
+    CreateReportsMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<
+    CreateReportsMutation,
+    CreateReportsMutationVariables
+  >(CreateReportsDocument, options)
+}
+export type CreateReportsMutationHookResult = ReturnType<
+  typeof useCreateReportsMutation
+>
+export type CreateReportsMutationResult =
+  Apollo.MutationResult<CreateReportsMutation>
+export type CreateReportsMutationOptions = Apollo.BaseMutationOptions<
+  CreateReportsMutation,
+  CreateReportsMutationVariables
 >
