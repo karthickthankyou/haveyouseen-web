@@ -30,7 +30,7 @@ export const Header = ({
         <Container className="relative z-50 flex items-center justify-between h-16 py-2">
           <div className="relative flex items-center justify-between w-full gap-16">
             <Link href="/" aria-label="Home" className="w-auto">
-              <Brand type={type} className="hidden h-10 sm:block" />
+              <Brand type={type} />
             </Link>
 
             <Suspense fallback={null}>

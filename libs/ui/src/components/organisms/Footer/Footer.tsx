@@ -1,11 +1,9 @@
-import { useRouter } from 'next/navigation'
-import { Button } from '../../atoms/Button'
 import { Container } from '../../atoms/Container'
 
 export interface IFooterProps {}
 
 export const Footer = () => (
-  <footer className="justify-between pt-8 mt-8 text-xs border-t sm:flex">
+  <footer className="justify-between py-12 pt-8 mt-8 text-xs sm:flex">
     <Container>
       <a target="_blank" href="https://www.iamkarthick.com" rel="noreferrer">
         Made by

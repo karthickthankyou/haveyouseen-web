@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { memo } from 'react'
 
 import { Button } from '../../atoms/Button'
@@ -8,38 +7,27 @@ import { HtmlLabel } from '../../atoms/HtmlLabel'
 import {
   namedOperations,
   useCreateOfficerMutation,
-  useOfficerMeQuery,
   useUnapprovedReportsQuery,
 } from '@haveyouseen-org/network/src/generated'
-import { useAppDispatch, useAppSelector } from '@haveyouseen-org/store'
+import { useAppSelector } from '@haveyouseen-org/store'
 import { useFormCreateOfficer } from '@haveyouseen-org/forms/src/createOfficer'
-import { selectUser } from '@haveyouseen-org/store/user'
+import { selectUid } from '@haveyouseen-org/store/user'
+import { notification$ } from '@haveyouseen-org/util/subjects'
 
 export interface IOfficerProps {}
 
-export const Officer = ({}: IOfficerProps) => {
-  const user = useAppSelector(selectUser)
-  const { data, error } = useOfficerMeQuery()
-
-  if (!user.uid)
-    return (
-      <div>
-        <Link href="/login">Login</Link>
-      </div>
-    )
-
-  if (!data?.officerMe) return <CreateOfficer uid={user.uid} />
-  return <OfficerTemplate />
-}
-
-export const CreateOfficer = memo(({ uid }: { uid: string }) => {
+export const CreateOfficer = memo(() => {
+  const uid = useAppSelector(selectUid)
   const [createOfficerMutation, { loading, data }] = useCreateOfficerMutation()
-  const dispatch = useAppDispatch()
 
   const { register, handleSubmit } = useFormCreateOfficer()
   return (
     <Form
       onSubmit={handleSubmit(async (data) => {
+        if (!uid) {
+          notification$.next({ message: 'You are not logged in' })
+          return
+        }
         await createOfficerMutation({
           variables: {
             createOfficerInput: { uid, name: data.name },
@@ -61,7 +49,7 @@ export const CreateOfficer = memo(({ uid }: { uid: string }) => {
 
 CreateOfficer.displayName = 'CreateOfficer'
 
-export const OfficerTemplate = () => {
+export const Officer = () => {
   const { data, loading } = useUnapprovedReportsQuery({
     variables: {
       where: { approvedReport: { is: null }, caseId: { equals: 32 } },
@@ -69,7 +57,9 @@ export const OfficerTemplate = () => {
   })
   return (
     <div>
-      {data?.reports.map((rep) => <div key={rep.id}>{rep.caseId}</div>)}
+      {data?.reports.map((rep) => (
+        <div key={rep.id}>{rep.caseId}</div>
+      ))}
     </div>
   )
 }

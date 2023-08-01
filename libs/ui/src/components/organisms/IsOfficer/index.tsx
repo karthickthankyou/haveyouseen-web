@@ -1,0 +1,1 @@
+export { IsOfficer } from './IsOfficer'
