@@ -1,0 +1,31 @@
+{
+  "name": "haveyouseen",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": "true",
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "libs/*"
+    ]
+  },
+  "devDependencies": {
+    "lint-staged": "^13.2.3",
+    "npm-run-all": "^4.1.5",
+    "nx": "16.6.0",
+    "nx-cloud": "latest",
+    "prettier": "^3.0.0",
+    "husky": "^8.0.0"
+  },
+  "scripts": {
+    "prettier": "prettier  \"{apps,libs}/**/*.{ts,tsx,js,json}\" --ignore-path .gitignore",
+    "format:check": "yarn prettier --check",
+    "format:write": "yarn prettier --write",
+    "lint": "yarn nx run-many --target=lint",
+    "tsc": "yarn nx run-many --target=tsc",
+    "prevalidate": "yarn format:write",
+    "validate": "run-p format:check lint tsc",
+    "prepare": "husky install",
+    "cloc": "npx cloc --exclude-dir=node_modules,dist,build,yarn.lock,package.json,@generated,generated,.next ."
+  }
+}
