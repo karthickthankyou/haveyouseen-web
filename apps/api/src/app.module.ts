@@ -13,6 +13,8 @@ import { MissingPeopleModule } from './models/missing-people/missing-people.modu
 import { OfficersModule } from './models/officers/officers.module'
 import { ReportsModule } from './models/reports/reports.module'
 import { PrismaModule } from './common/prisma/prisma.module'
+import { FirebaseModule } from './common/firebase/firebase.module'
+import { AuthModule } from './common/auth/auth.module'
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { PrismaModule } from './common/prisma/prisma.module'
     }),
 
     PrismaModule,
+    FirebaseModule,
+    AuthModule,
 
     WitnessesModule,
     ApprovedReportsModule,

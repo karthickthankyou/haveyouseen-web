@@ -40,9 +40,9 @@ model Case {
     missingPerson   MissingPerson @relation(fields: [missingPersonId], references: [id])
     missingPersonId Int           @unique
 
-    status         Status   @default(MISSING)
-    privateReports Report[]
-    contact        String[]
+    status  Status   @default(MISSING)
+    reports Report[]
+    contact String[]
 }
 
 model MissingPerson {

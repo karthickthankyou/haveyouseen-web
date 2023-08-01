@@ -46,7 +46,7 @@ export class CaseWhereInput
   @Field(() => MissingPersonRelationFilter, { nullable: true })
   missingPerson: MissingPersonRelationFilter
   @Field(() => ReportListRelationFilter, { nullable: true })
-  privateReports: ReportListRelationFilter
+  reports: ReportListRelationFilter
   // @Field(() => StringFilter, { nullable: true })
   // uid: StringFilter
 

@@ -25,7 +25,7 @@ export class CaseOrderByWithRelationInput
   @Field(() => Prisma.SortOrder, { nullable: true })
   missingPerson: Prisma.MissingPersonOrderByWithRelationInput
   @Field(() => Prisma.SortOrder, { nullable: true })
-  privateReports: Prisma.ReportOrderByRelationAggregateInput
+  reports: Prisma.ReportOrderByRelationAggregateInput
   // Todo: Add properties
   // @Field(() => Prisma.SortOrder, { nullable: true })
   // id: Prisma.SortOrder

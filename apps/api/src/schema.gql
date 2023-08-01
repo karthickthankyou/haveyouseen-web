@@ -7,6 +7,7 @@ type Witness {
   createdAt: DateTime!
   updatedAt: DateTime!
   name: String!
+  reports: [Report!]!
 }
 
 """
@@ -14,12 +15,45 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Report {
+  time: DateTime
+  locationId: Int
+  type: ReportType!
+  caseId: Int
+  witnessId: String
+  audio: String
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  description: String!
+  location: Location!
+  approvedReport: ApprovedReport!
+  witness: Witness!
+}
+
+"""Enum for ReportType"""
+enum ReportType {
+  SIGHTING
+  LEAD
+  GENERAL_INFORMATION
+}
+
 type ApprovedReport {
   officerId: String
   id: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
   description: String!
+  officer: Officer!
+  report: Report!
+}
+
+type Officer {
+  name: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  uid: String!
+  approvedReports: [ApprovedReport!]!
 }
 
 type Case {
@@ -29,6 +63,8 @@ type Case {
   updatedAt: DateTime!
   missingPersonId: Int!
   contact: [String!]!
+  reports: [Report!]!
+  missingPerson: MissingPerson!
 }
 
 """Enum for Status"""
@@ -36,15 +72,6 @@ enum Status {
   MISSING
   FOUND_SAFE
   FOUND_DECEASED
-}
-
-type Location {
-  id: Int!
-  latitude: Int!
-  longitude: Int!
-  address: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
 }
 
 type MissingPerson {
@@ -60,6 +87,7 @@ type MissingPerson {
   displayName: String!
   images: [String!]!
   description: String!
+  case: Case!
 }
 
 """Enum for Gender"""
@@ -79,31 +107,44 @@ enum BodyType {
   OBESE
 }
 
-type Officer {
-  name: String
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  uid: String!
-}
-
-type Report {
-  time: DateTime
-  locationId: Int
-  type: ReportType!
-  caseId: Int
-  witnessId: String
-  audio: String
+type Location {
   id: Int!
+  latitude: Int!
+  longitude: Int!
+  address: String!
   createdAt: DateTime!
   updatedAt: DateTime!
-  description: String!
+  reports: [Report!]!
 }
 
-"""Enum for ReportType"""
-enum ReportType {
-  SIGHTING
-  LEAD
-  GENERAL_INFORMATION
+type LoginOutput {
+  kind: String!
+  localId: String!
+  email: String!
+  displayName: String!
+  idToken: String!
+  refreshToken: String!
+  expiresIn: String!
+}
+
+type RegisterOutput {
+  kind: String!
+  localId: String!
+  email: String!
+  displayName: String!
+  idToken: String!
+  refreshToken: String!
+  expiresIn: String!
+}
+
+type RefreshTokenOutput {
+  access_token: String!
+  expires_in: String!
+  token_type: String!
+  refresh_token: String!
+  id_token: String!
+  user_id: String!
+  project_id: String!
 }
 
 type Query {
@@ -245,7 +286,7 @@ input CaseWhereInput {
   status: EnumStatusFilter
   contact: StringListFilter
   missingPerson: MissingPersonRelationFilter
-  privateReports: ReportListRelationFilter
+  reports: ReportListRelationFilter
   AND: [CaseWhereInput!]
   OR: [CaseWhereInput!]
   NOT: [CaseWhereInput!]
@@ -422,7 +463,7 @@ input CaseOrderByWithRelationInput {
   status: SortOrder
   contact: SortOrder
   missingPerson: SortOrder
-  privateReports: SortOrder
+  reports: SortOrder
 }
 
 input OfficerOrderByWithRelationInput {
@@ -539,6 +580,12 @@ enum ReportScalarFieldEnum {
 }
 
 type Mutation {
+  login(credentials: LoginInput!): LoginOutput!
+  register(credentials: RegisterInput!): RegisterOutput!
+  logout: Boolean!
+  refreshToken(refreshTokenInput: RefreshTokenInput!): RefreshTokenOutput!
+  setRole(setRoleInput: SetRoleInput!): Boolean!
+  setAdmin(uid: String!): Boolean!
   createWitness(createWitnessInput: CreateWitnessInput!): Witness!
   updateWitness(updateWitnessInput: UpdateWitnessInput!): Witness!
   removeWitness(where: WitnessWhereUniqueInput): Witness!
@@ -560,6 +607,32 @@ type Mutation {
   createReport(createReportInput: CreateReportInput!): Report!
   updateReport(updateReportInput: UpdateReportInput!): Report!
   removeReport(where: ReportWhereUniqueInput): Report!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input RegisterInput {
+  email: String!
+  password: String!
+  displayName: String
+}
+
+input RefreshTokenInput {
+  refresh_token: String!
+}
+
+input SetRoleInput {
+  uid: String!
+  role: RoleEnum!
+}
+
+"""Enum for roles"""
+enum RoleEnum {
+  admin
+  manager
 }
 
 input CreateWitnessInput {
