@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+generator erd {
+    provider = "prisma-erd-generator"
+}
+
+model Witness {
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    uid     String   @id
+    name    String?
+    reports Report[]
+}
+
+model Officer {
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    uid             String           @id
+    name            String?
+    approvedReports ApprovedReport[]
+}
+
+model Case {
+    id        Int      @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    missingPerson   MissingPerson @relation(fields: [missingPersonId], references: [id])
+    missingPersonId Int           @unique
+
+    status         Status   @default(MISSING)
+    privateReports Report[]
+    contact        String[]
+}
+
+model MissingPerson {
+    id        Int      @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    displayName  String
+    images       String[]
+    dob          DateTime?
+    gender       Gender
+    description  String
+    case         Case?
+    missingSince DateTime?
+    height       Float?
+    weight       Float?
+    bodyType     BodyType?
+}
+
+model Report {
+    id        Int      @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    time           DateTime?
+    description    String
+    location       Location?       @relation(fields: [locationId], references: [id])
+    locationId     Int?
+    type           ReportType
+    case           Case?           @relation(fields: [caseId], references: [id])
+    caseId         Int?
+    approvedReport ApprovedReport?
+    witness        Witness?        @relation(fields: [witnessId], references: [uid])
+    witnessId      String?
+    audio          String?
+}
+
+model ApprovedReport {
+    id        Int      @id
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    report    Report   @relation(fields: [id], references: [id])
+
+    description String
+    officer     Officer? @relation(fields: [officerId], references: [uid])
+    officerId   String?
+}
+
+model Location {
+    id        Int      @id @default(autoincrement())
+    latitude  Float
+    longitude Float
+    address   String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    reports   Report[]
+}
+
+enum Status {
+    MISSING
+    FOUND_SAFE
+    FOUND_DECEASED
+}
+
+enum BodyType {
+    SLENDER
+    AVERAGE
+    ATHLETIC
+    HEAVY
+    OBESE
+}
+
+enum Gender {
+    MALE
+    FEMALE
+    NON_BINARY
+    PREFER_NOT_TO_SAY
+}
+
+enum ReportType {
+    SIGHTING
+    LEAD
+    GENERAL_INFORMATION
+}

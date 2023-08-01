@@ -1,0 +1,10 @@
+yarn resource Customer
+yarn resource Manager
+yarn resource Company
+yarn resource Garage
+yarn resource Address
+yarn resource Slot
+yarn resource Booking
+yarn resource Admin
+yarn resource Review
+yarn resource Verification

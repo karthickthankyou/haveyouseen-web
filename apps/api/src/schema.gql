@@ -1,0 +1,667 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Witness {
+  uid: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type ApprovedReport {
+  officerId: String
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  description: String!
+}
+
+type Case {
+  status: Status!
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  missingPersonId: Int!
+  contact: [String!]!
+}
+
+"""Enum for Status"""
+enum Status {
+  MISSING
+  FOUND_SAFE
+  FOUND_DECEASED
+}
+
+type Location {
+  id: Int!
+  latitude: Int!
+  longitude: Int!
+  address: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type MissingPerson {
+  dob: DateTime
+  gender: Gender
+  missingSince: DateTime
+  height: Int
+  weight: Int
+  bodyType: BodyType
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  displayName: String!
+  images: [String!]!
+  description: String!
+}
+
+"""Enum for Gender"""
+enum Gender {
+  MALE
+  FEMALE
+  NON_BINARY
+  PREFER_NOT_TO_SAY
+}
+
+"""Enum for BodyType"""
+enum BodyType {
+  SLENDER
+  AVERAGE
+  ATHLETIC
+  HEAVY
+  OBESE
+}
+
+type Officer {
+  name: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  uid: String!
+}
+
+type Report {
+  time: DateTime
+  locationId: Int
+  type: ReportType!
+  caseId: Int
+  witnessId: String
+  audio: String
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  description: String!
+}
+
+"""Enum for ReportType"""
+enum ReportType {
+  SIGHTING
+  LEAD
+  GENERAL_INFORMATION
+}
+
+type Query {
+  witnesses(where: WitnessWhereInput, orderBy: [WitnessOrderByWithRelationInput!], cursor: WitnessWhereUniqueInput, take: Int, skip: Int, distinct: [WitnessScalarFieldEnum!]): [Witness!]!
+  witness(where: WitnessWhereUniqueInput): Witness!
+  approvedReports(where: ApprovedReportWhereInput, orderBy: [ApprovedReportOrderByWithRelationInput!], cursor: ApprovedReportWhereUniqueInput, take: Int, skip: Int, distinct: [ApprovedReportScalarFieldEnum!]): [ApprovedReport!]!
+  approvedReport(where: ApprovedReportWhereUniqueInput): ApprovedReport!
+  cases(where: CaseWhereInput, orderBy: [CaseOrderByWithRelationInput!], cursor: CaseWhereUniqueInput, take: Int, skip: Int, distinct: [CaseScalarFieldEnum!]): [Case!]!
+  case(where: CaseWhereUniqueInput): Case!
+  locations(where: LocationWhereInput, orderBy: [LocationOrderByWithRelationInput!], cursor: LocationWhereUniqueInput, take: Int, skip: Int, distinct: [LocationScalarFieldEnum!]): [Location!]!
+  location(where: LocationWhereUniqueInput): Location!
+  missingPeople(where: MissingPersonWhereInput, orderBy: [MissingPersonOrderByWithRelationInput!], cursor: MissingPersonWhereUniqueInput, take: Int, skip: Int, distinct: [MissingPersonScalarFieldEnum!]): [MissingPerson!]!
+  missingPerson(where: MissingPersonWhereUniqueInput): MissingPerson!
+  officers(where: OfficerWhereInput, orderBy: [OfficerOrderByWithRelationInput!], cursor: OfficerWhereUniqueInput, take: Int, skip: Int, distinct: [OfficerScalarFieldEnum!]): [Officer!]!
+  officer(where: OfficerWhereUniqueInput): Officer!
+  reports(where: ReportWhereInput, orderBy: [ReportOrderByWithRelationInput!], cursor: ReportWhereUniqueInput, take: Int, skip: Int, distinct: [ReportScalarFieldEnum!]): [Report!]!
+  report(where: ReportWhereUniqueInput): Report!
+}
+
+input WitnessWhereInput {
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  uid: StringFilter
+  name: StringFilter
+  reports: ReportListRelationFilter
+  AND: [WitnessWhereInput!]
+  OR: [WitnessWhereInput!]
+  NOT: [WitnessWhereInput!]
+}
+
+input DateTimeFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+}
+
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: String
+  mode: QueryMode
+}
+
+enum QueryMode {
+  default
+  insensitive
+}
+
+input ReportListRelationFilter {
+  every: ReportWhereInput
+  some: ReportWhereInput
+  none: ReportWhereInput
+}
+
+input ReportWhereInput {
+  id: IntFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  time: DateTimeFilter
+  description: StringFilter
+  locationId: IntFilter
+  type: EnumReportTypeFilter
+  caseId: IntFilter
+  witnessId: StringFilter
+  audio: StringFilter
+  location: LocationRelationFilter
+  case: CaseRelationFilter
+  approvedReport: ApprovedReportRelationFilter
+  witness: WitnessRelationFilter
+  AND: [ReportWhereInput!]
+  OR: [ReportWhereInput!]
+  NOT: [ReportWhereInput!]
+}
+
+input IntFilter {
+  equals: Int
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+}
+
+input EnumReportTypeFilter {
+  equals: ReportType
+  in: [ReportType!]
+  notIn: [ReportType!]
+  not: ReportType
+}
+
+input LocationRelationFilter {
+  is: LocationWhereInput
+  isNot: LocationWhereInput
+}
+
+input LocationWhereInput {
+  id: IntFilter
+  latitude: FloatFilter
+  longitude: FloatFilter
+  address: StringFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  reports: ReportListRelationFilter
+  AND: [LocationWhereInput!]
+  OR: [LocationWhereInput!]
+  NOT: [LocationWhereInput!]
+}
+
+input FloatFilter {
+  equals: Float
+  lt: Float
+  lte: Float
+  gt: Float
+  gte: Float
+  not: Float
+}
+
+input CaseRelationFilter {
+  is: CaseWhereInput
+  isNot: CaseWhereInput
+}
+
+input CaseWhereInput {
+  id: IntFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  missingPersonId: IntFilter
+  status: EnumStatusFilter
+  contact: StringListFilter
+  missingPerson: MissingPersonRelationFilter
+  privateReports: ReportListRelationFilter
+  AND: [CaseWhereInput!]
+  OR: [CaseWhereInput!]
+  NOT: [CaseWhereInput!]
+}
+
+input EnumStatusFilter {
+  equals: Status
+  in: [Status!]
+  notIn: [Status!]
+  not: Status
+}
+
+input StringListFilter {
+  equals: [String!]
+  has: String
+  hasEvery: [String!]
+  hasSome: [String!]
+  isEmpty: Boolean
+}
+
+input MissingPersonRelationFilter {
+  is: MissingPersonWhereInput
+  isNot: MissingPersonWhereInput
+}
+
+input MissingPersonWhereInput {
+  id: IntFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  displayName: StringFilter
+  images: StringListFilter
+  dob: DateTimeFilter
+  gender: EnumGenderFilter
+  description: StringFilter
+  missingSince: DateTimeFilter
+  height: FloatFilter
+  weight: FloatFilter
+  bodyType: EnumBodyTypeFilter
+  case: CaseRelationFilter
+  AND: [MissingPersonWhereInput!]
+  OR: [MissingPersonWhereInput!]
+  NOT: [MissingPersonWhereInput!]
+}
+
+input EnumGenderFilter {
+  equals: Gender
+  in: [Gender!]
+  notIn: [Gender!]
+  not: Gender
+}
+
+input EnumBodyTypeFilter {
+  equals: BodyType
+  in: [BodyType!]
+  notIn: [BodyType!]
+  not: BodyType
+}
+
+input ApprovedReportRelationFilter {
+  is: ApprovedReportWhereInput
+  isNot: ApprovedReportWhereInput
+}
+
+input ApprovedReportWhereInput {
+  id: IntFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  description: StringFilter
+  officerId: StringFilter
+  report: ReportRelationFilter
+  officer: OfficerWhereInput
+  AND: [ApprovedReportWhereInput!]
+  OR: [ApprovedReportWhereInput!]
+  NOT: [ApprovedReportWhereInput!]
+}
+
+input ReportRelationFilter {
+  is: ReportWhereInput
+  isNot: ReportWhereInput
+}
+
+input OfficerWhereInput {
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  uid: StringFilter
+  name: StringFilter
+  approvedReports: ApprovedReportListRelationFilter
+  AND: [OfficerWhereInput!]
+  OR: [OfficerWhereInput!]
+  NOT: [OfficerWhereInput!]
+}
+
+input ApprovedReportListRelationFilter {
+  every: ApprovedReportWhereInput
+  some: ApprovedReportWhereInput
+  none: ApprovedReportWhereInput
+}
+
+input WitnessRelationFilter {
+  is: WitnessWhereInput
+  isNot: WitnessWhereInput
+}
+
+input WitnessOrderByWithRelationInput {
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  uid: SortOrder
+  name: SortOrder
+  reports: ReportOrderByRelationAggregateInput
+}
+
+enum SortOrder {
+  asc
+  desc
+}
+
+input ReportOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input WitnessWhereUniqueInput {
+  uid: String
+}
+
+enum WitnessScalarFieldEnum {
+  createdAt
+  updatedAt
+  uid
+  name
+}
+
+input ApprovedReportOrderByWithRelationInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  description: SortOrder
+  officerId: SortOrder
+  report: ReportOrderByWithRelationInput
+  officer: OfficerOrderByWithRelationInput
+}
+
+input ReportOrderByWithRelationInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  time: SortOrder
+  description: SortOrder
+  locationId: SortOrder
+  type: SortOrder
+  caseId: SortOrder
+  witnessId: SortOrder
+  audio: SortOrder
+  location: LocationOrderByWithRelationInput
+  case: CaseOrderByWithRelationInput
+  approvedReport: ApprovedReportOrderByWithRelationInput
+  witness: WitnessOrderByWithRelationInput
+}
+
+input LocationOrderByWithRelationInput {
+  id: SortOrder
+  latitude: SortOrder
+  longitude: SortOrder
+  address: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  reports: ReportOrderByRelationAggregateInput
+}
+
+input CaseOrderByWithRelationInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  missingPersonId: SortOrder
+  status: SortOrder
+  contact: SortOrder
+  missingPerson: SortOrder
+  privateReports: SortOrder
+}
+
+input OfficerOrderByWithRelationInput {
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  uid: SortOrder
+  name: SortOrder
+  approvedReports: ApprovedReportOrderByRelationAggregateInput
+}
+
+input ApprovedReportOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input ApprovedReportWhereUniqueInput {
+  id: Int
+}
+
+enum ApprovedReportScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  description
+  officerId
+}
+
+input CaseWhereUniqueInput {
+  id: Int
+}
+
+enum CaseScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  missingPersonId
+  status
+  contact
+}
+
+input LocationWhereUniqueInput {
+  id: Int
+}
+
+enum LocationScalarFieldEnum {
+  id
+  latitude
+  longitude
+  address
+  createdAt
+  updatedAt
+}
+
+input MissingPersonOrderByWithRelationInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  displayName: SortOrder
+  images: SortOrder
+  dob: SortOrder
+  gender: SortOrder
+  description: SortOrder
+  missingSince: SortOrder
+  height: SortOrder
+  weight: SortOrder
+  bodyType: SortOrder
+  case: CaseOrderByWithRelationInput
+}
+
+input MissingPersonWhereUniqueInput {
+  id: Int
+}
+
+enum MissingPersonScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  displayName
+  images
+  dob
+  gender
+  description
+  missingSince
+  height
+  weight
+  bodyType
+}
+
+input OfficerWhereUniqueInput {
+  uid: String
+}
+
+enum OfficerScalarFieldEnum {
+  createdAt
+  updatedAt
+  uid
+  name
+}
+
+input ReportWhereUniqueInput {
+  id: Int
+}
+
+enum ReportScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  time
+  description
+  locationId
+  type
+  caseId
+  witnessId
+  audio
+}
+
+type Mutation {
+  createWitness(createWitnessInput: CreateWitnessInput!): Witness!
+  updateWitness(updateWitnessInput: UpdateWitnessInput!): Witness!
+  removeWitness(where: WitnessWhereUniqueInput): Witness!
+  createApprovedReport(createApprovedReportInput: CreateApprovedReportInput!): ApprovedReport!
+  updateApprovedReport(updateApprovedReportInput: UpdateApprovedReportInput!): ApprovedReport!
+  removeApprovedReport(where: ApprovedReportWhereUniqueInput): ApprovedReport!
+  createCase(createCaseInput: CreateCaseInput!): Case!
+  updateCase(updateCaseInput: UpdateCaseInput!): Case!
+  removeCase(where: CaseWhereUniqueInput): Case!
+  createLocation(createLocationInput: CreateLocationInput!): Location!
+  updateLocation(updateLocationInput: UpdateLocationInput!): Location!
+  removeLocation(where: LocationWhereUniqueInput): Location!
+  createMissingPerson(createMissingPersonInput: CreateMissingPersonInput!): MissingPerson!
+  updateMissingPerson(updateMissingPersonInput: UpdateMissingPersonInput!): MissingPerson!
+  removeMissingPerson(where: MissingPersonWhereUniqueInput): MissingPerson!
+  createOfficer(createOfficerInput: CreateOfficerInput!): Officer!
+  updateOfficer(updateOfficerInput: UpdateOfficerInput!): Officer!
+  removeOfficer(where: OfficerWhereUniqueInput): Officer!
+  createReport(createReportInput: CreateReportInput!): Report!
+  updateReport(updateReportInput: UpdateReportInput!): Report!
+  removeReport(where: ReportWhereUniqueInput): Report!
+}
+
+input CreateWitnessInput {
+  uid: String
+  name: String!
+}
+
+input UpdateWitnessInput {
+  uid: String!
+  name: String
+}
+
+input CreateApprovedReportInput {
+  officerId: String
+  id: Int!
+  description: String!
+}
+
+input UpdateApprovedReportInput {
+  officerId: String
+  id: Int!
+  description: String
+}
+
+input CreateCaseInput {
+  status: Status!
+  missingPersonId: Int!
+  contact: [String!]!
+}
+
+input UpdateCaseInput {
+  status: Status
+  missingPersonId: Int
+  contact: [String!]
+  id: Int!
+}
+
+input CreateLocationInput {
+  latitude: Int!
+  longitude: Int!
+  address: String!
+}
+
+input UpdateLocationInput {
+  latitude: Int
+  longitude: Int
+  address: String
+  id: Int!
+}
+
+input CreateMissingPersonInput {
+  dob: DateTime
+  gender: Gender
+  missingSince: DateTime
+  height: Int
+  weight: Int
+  bodyType: BodyType
+  displayName: String!
+  images: [String!]!
+  description: String!
+}
+
+input UpdateMissingPersonInput {
+  dob: DateTime
+  gender: Gender
+  missingSince: DateTime
+  height: Int
+  weight: Int
+  bodyType: BodyType
+  displayName: String
+  images: [String!]
+  description: String
+  id: Int!
+}
+
+input CreateOfficerInput {
+  name: String
+  uid: String!
+}
+
+input UpdateOfficerInput {
+  name: String
+  uid: String!
+}
+
+input CreateReportInput {
+  time: DateTime
+  locationId: Int
+  type: ReportType!
+  caseId: Int
+  witnessId: String
+  audio: String
+  description: String!
+}
+
+input UpdateReportInput {
+  time: DateTime
+  locationId: Int
+  type: ReportType
+  caseId: Int
+  witnessId: String
+  audio: String
+  description: String
+  id: Int!
+}
