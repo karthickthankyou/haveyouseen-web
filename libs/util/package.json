@@ -1,0 +1,22 @@
+{
+  "name": "@haveyouseen-org/util",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "license": "MIT",
+  "dependencies": {
+    "@haveyouseen-org/network": "*",
+    "@haveyouseen-org/types": "*",
+    "js-cookie": "^3.0.5",
+    "jsonwebtoken": "^9.0.0",
+    "jwt-decode": "^3.1.2",
+    "pluralize": "^8.0.0"
+  },
+  "devDependencies": {
+    "@types/js-cookie": "^3.0.3",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/pluralize": "^0.0.29"
+  },
+  "scripts": {
+    "tsc": "tsc"
+  }
+}

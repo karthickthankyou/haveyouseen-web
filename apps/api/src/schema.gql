@@ -29,6 +29,7 @@ type Report {
   location: Location!
   approvedReport: ApprovedReport!
   witness: Witness!
+  case: Case!
 }
 
 """Enum for ReportType"""
@@ -154,12 +155,14 @@ type Query {
   approvedReport(where: ApprovedReportWhereUniqueInput): ApprovedReport!
   cases(where: CaseWhereInput, orderBy: [CaseOrderByWithRelationInput!], cursor: CaseWhereUniqueInput, take: Int, skip: Int, distinct: [CaseScalarFieldEnum!]): [Case!]!
   case(where: CaseWhereUniqueInput): Case!
+  searchCases(dateFilter: DateFilterInput, locationFilter: LocationFilterInput!): [Report!]!
   locations(where: LocationWhereInput, orderBy: [LocationOrderByWithRelationInput!], cursor: LocationWhereUniqueInput, take: Int, skip: Int, distinct: [LocationScalarFieldEnum!]): [Location!]!
   location(where: LocationWhereUniqueInput): Location!
   missingPeople(where: MissingPersonWhereInput, orderBy: [MissingPersonOrderByWithRelationInput!], cursor: MissingPersonWhereUniqueInput, take: Int, skip: Int, distinct: [MissingPersonScalarFieldEnum!]): [MissingPerson!]!
   missingPerson(where: MissingPersonWhereUniqueInput): MissingPerson!
   officers(where: OfficerWhereInput, orderBy: [OfficerOrderByWithRelationInput!], cursor: OfficerWhereUniqueInput, take: Int, skip: Int, distinct: [OfficerScalarFieldEnum!]): [Officer!]!
   officer(where: OfficerWhereUniqueInput): Officer!
+  officerMe(where: OfficerWhereUniqueInput): Officer!
   reports(where: ReportWhereInput, orderBy: [ReportOrderByWithRelationInput!], cursor: ReportWhereUniqueInput, take: Int, skip: Int, distinct: [ReportScalarFieldEnum!]): [Report!]!
   report(where: ReportWhereUniqueInput): Report!
 }
@@ -501,6 +504,18 @@ enum CaseScalarFieldEnum {
   missingPersonId
   status
   contact
+}
+
+input DateFilterInput {
+  start: String!
+  end: String!
+}
+
+input LocationFilterInput {
+  nw_lat: Float!
+  nw_lng: Float!
+  se_lat: Float!
+  se_lng: Float!
 }
 
 input LocationWhereUniqueInput {

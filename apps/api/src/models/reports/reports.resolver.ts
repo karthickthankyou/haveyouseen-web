@@ -16,6 +16,7 @@ import { AllowAuthenticated } from 'src/common/decorators/auth/auth.decorator'
 import { PrismaService } from 'src/common/prisma/prisma.service'
 import { ApprovedReport } from '../approved-reports/entities/approved-report.entity'
 import { Witness } from '../witnesses/entities/witness.entity'
+import { Case } from '../cases/entities/case.entity'
 
 @Resolver(() => Report)
 export class ReportsResolver {
@@ -70,6 +71,13 @@ export class ReportsResolver {
   witness(@Parent() parent: Report) {
     return this.prisma.witness.findUnique({
       where: { uid: parent.witnessId },
+    })
+  }
+
+  @ResolveField(() => Case)
+  case(@Parent() parent: Report) {
+    return this.prisma.case.findUnique({
+      where: { id: parent.caseId },
     })
   }
 }

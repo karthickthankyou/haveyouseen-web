@@ -1,0 +1,1 @@
+export { RedirectToSearch } from './RedirectToSearch'

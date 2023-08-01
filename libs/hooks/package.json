@@ -1,0 +1,14 @@
+{
+  "name": "@haveyouseen-org/hooks",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "license": "MIT",
+  "dependencies": {
+    "@haveyouseen-org/network": "*",
+    "@haveyouseen-org/store": "*",
+    "@haveyouseen-org/hooks": "*"
+  },
+  "scripts": {
+    "tsc": "tsc"
+  }
+}

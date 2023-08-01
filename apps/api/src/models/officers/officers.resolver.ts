@@ -11,9 +11,13 @@ import { Officer } from './entities/officer.entity'
 import { FindManyOfficerArgs, FindUniqueOfficerArgs } from './dto/find.args'
 import { CreateOfficerInput } from './dto/create-officer.input'
 import { UpdateOfficerInput } from './dto/update-officer.input'
-import { AllowAuthenticated } from 'src/common/decorators/auth/auth.decorator'
+import {
+  AllowAuthenticated,
+  GetUser,
+} from 'src/common/decorators/auth/auth.decorator'
 import { PrismaService } from 'src/common/prisma/prisma.service'
 import { ApprovedReport } from '../approved-reports/entities/approved-report.entity'
+import { GetUserType } from 'src/common/types'
 
 @Resolver(() => Officer)
 export class OfficersResolver {
@@ -35,6 +39,12 @@ export class OfficersResolver {
   @Query(() => Officer, { name: 'officer' })
   findOne(@Args() args: FindUniqueOfficerArgs) {
     return this.officersService.findOne(args)
+  }
+
+  @AllowAuthenticated()
+  @Query(() => Officer, { name: 'officerMe' })
+  officerMe(@Args() args: FindUniqueOfficerArgs, @GetUser() user: GetUserType) {
+    return this.officersService.findOne({ ...args, where: { uid: user.uid } })
   }
 
   @AllowAuthenticated('officer')

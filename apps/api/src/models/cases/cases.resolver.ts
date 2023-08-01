@@ -15,6 +15,7 @@ import { AllowAuthenticated } from 'src/common/decorators/auth/auth.decorator'
 import { Report } from '../reports/entities/report.entity'
 import { PrismaService } from 'src/common/prisma/prisma.service'
 import { MissingPerson } from '../missing-people/entities/missing-person.entity'
+import { DateFilterInput, LocationFilterInput } from './dto/filter.input'
 
 @Resolver(() => Case)
 export class CasesResolver {
@@ -43,6 +44,29 @@ export class CasesResolver {
   @Mutation(() => Case)
   updateCase(@Args('updateCaseInput') args: UpdateCaseInput) {
     return this.casesService.update(args)
+  }
+
+  @Query(() => [Report])
+  searchCases(
+    @Args('dateFilter', { nullable: true }) dateFilter: DateFilterInput,
+    @Args('locationFilter')
+    locationFilter: LocationFilterInput,
+  ) {
+    const { end, start } = dateFilter
+    const { nw_lat, nw_lng, se_lat, se_lng } = locationFilter
+
+    return this.prisma.report.findMany({
+      distinct: ['caseId'],
+      where: {
+        time: { gte: new Date(start), lte: new Date(end) },
+        location: {
+          is: {
+            latitude: { lte: nw_lat, gte: se_lat },
+            longitude: { gte: nw_lng, lte: se_lng },
+          },
+        },
+      },
+    })
   }
 
   @AllowAuthenticated()

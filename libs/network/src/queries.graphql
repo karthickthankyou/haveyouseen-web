@@ -1,0 +1,122 @@
+query reports {
+  reports {
+    id
+  }
+}
+
+mutation createWitness($createWitnessInput: CreateWitnessInput!) {
+  createWitness(createWitnessInput: $createWitnessInput) {
+    uid
+  }
+}
+
+query searchCases(
+  $locationFilter: LocationFilterInput!
+  $dateFilter: DateFilterInput
+) {
+  searchCases(locationFilter: $locationFilter, dateFilter: $dateFilter) {
+    case {
+      status
+      id
+      missingPerson {
+        images
+        displayName
+        gender
+      }
+    }
+    location {
+      address
+      latitude
+      longitude
+    }
+  }
+}
+
+query case($where: CaseWhereUniqueInput!) {
+  case(where: $where) {
+    id
+    missingPerson {
+      displayName
+      description
+      missingSince
+      gender
+      dob
+      height
+      weight
+      images
+    }
+    reports {
+      time
+      id
+      type
+      description
+      location {
+        latitude
+        longitude
+      }
+    }
+    contact
+    status
+  }
+}
+
+mutation createCase($createCaseInput: CreateCaseInput!) {
+  createCase(createCaseInput: $createCaseInput) {
+    id
+  }
+}
+
+query officerMe {
+  officerMe {
+    uid
+    createdAt
+    name
+    updatedAt
+  }
+}
+
+query witness($where: WitnessWhereUniqueInput!) {
+  witness(where: $where) {
+    uid
+    createdAt
+    name
+    updatedAt
+  }
+}
+
+mutation createOfficer($createOfficerInput: CreateOfficerInput!) {
+  createOfficer(createOfficerInput: $createOfficerInput) {
+    uid
+    name
+    createdAt
+    updatedAt
+  }
+}
+
+query unapprovedReports($where: ReportWhereInput) {
+  reports(where: $where) {
+    id
+    caseId
+    time
+    type
+    audio
+    description
+    createdAt
+    location {
+      latitude
+      longitude
+    }
+    witness {
+      uid
+      name
+    }
+  }
+}
+
+mutation createApprovedReport(
+  $createApprovedReportInput: CreateApprovedReportInput!
+) {
+  createApprovedReport(createApprovedReportInput: $createApprovedReportInput) {
+    description
+  }
+}

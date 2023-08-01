@@ -1,0 +1,1 @@
+export { MissingPersonInfo } from './MissingPersonInfo'

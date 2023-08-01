@@ -1,0 +1,21 @@
+{
+  "name": "@haveyouseen-org/store",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.9.3",
+    "react-map-gl": "^7.0.21",
+    "react-redux": "^8.0.5",
+    "redux-persist": "^6.0.0"
+  },
+  "devDependencies": {
+    "@haveyouseen-org/network": "*",
+    "@haveyouseen-org/types": "*",
+    "@haveyouseen-org/ui": "*",
+    "@redux-devtools/extension": "^3.2.5"
+  },
+  "scripts": {
+    "tsc": "tsc"
+  }
+}
