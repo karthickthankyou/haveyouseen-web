@@ -7,5 +7,5 @@ audio {
 }
 
 .mapboxgl-popup-content {
-  @apply p-0 overflow-hidden border-t border-white shadow-lg bg-white/20 backdrop-blur-sm border-x;
+  @apply shadow-lg p-0 rounded-none overflow-hidden bg-white/20 backdrop-blur-sm border-x border-t border-white !important;
 }

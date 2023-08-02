@@ -12,15 +12,13 @@ export const MissingPersonInfo = ({
 }: IMissingPersonInfoProps) => {
   if (!missingPerson) return null
   return (
-    <>
-      <div className="relative w-full h-64">
-        <Image
-          alt={missingPerson.displayName}
-          fill
-          className="object-cover"
-          src={missingPerson?.images ? missingPerson?.images[0] : ''}
-        />
-      </div>
+    <div className="space-y-4">
+      <Image
+        alt={missingPerson.displayName}
+        fill
+        className="relative object-cover w-full h-full aspect-square"
+        src={missingPerson?.images ? missingPerson?.images[0] : ''}
+      />
       <KeyValue title="Name">{missingPerson.displayName}</KeyValue>
       <KeyValue title="Description">{missingPerson.description}</KeyValue>
       <div className="grid justify-between grid-cols-2 gap-1">
@@ -46,6 +44,6 @@ export const MissingPersonInfo = ({
         </KeyValue>
       </div>
       <div className="pt-6" />
-    </>
+    </div>
   )
 }

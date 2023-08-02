@@ -1,11 +1,11 @@
 import { IconPlus } from '@tabler/icons-react'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
 import { useFieldArray, useFormContext, useWatch } from 'react-hook-form'
 import { useMap } from 'react-map-gl'
 
 import {
   ReportType,
+  namedOperations,
   useCreateReportsMutation,
 } from '@haveyouseen-org/network/src/generated'
 
@@ -17,7 +17,7 @@ import HtmlSelect from '../../atoms/HtmlSelect'
 import { HtmlTextArea } from '../../atoms/HtmlTextArea'
 import { AudioRecord } from '../../molecules/AudioRecord'
 import { DisplayLocation } from '../AddNewCase/AddNewCase'
-import { useAppDispatch, useAppSelector } from '@haveyouseen-org/store'
+import { useAppSelector } from '@haveyouseen-org/store'
 import { selectUid } from '@haveyouseen-org/store/user'
 import { notification$ } from '@haveyouseen-org/util/subjects'
 import { makeId } from '@haveyouseen-org/util'
@@ -45,7 +45,6 @@ export const AddReports = () => {
     defaultValue: [],
   })
 
-  const router = useRouter()
   const { current: mapNewReport } = useMap()
 
   const [createReportsMutation, { loading }] = useCreateReportsMutation()
@@ -54,7 +53,6 @@ export const AddReports = () => {
     <Form
       className="p-2 space-y-6"
       onSubmit={handleSubmit(async (data) => {
-        console.log('--- - --- - - - - -- Data', data)
         const { data: savedData } = await createReportsMutation({
           variables: {
             caseId: +data.caseId,
@@ -69,7 +67,7 @@ export const AddReports = () => {
                 address,
                 images,
               }) => ({
-                witness: { connect: { uid } },
+                witnessId: uid,
                 location: {
                   latitude: lat,
                   longitude: lng,
@@ -79,19 +77,20 @@ export const AddReports = () => {
                 description,
                 time,
                 type,
-                images,
+                images: images || [],
               }),
             ),
           },
+          awaitRefetchQueries: true,
+          refetchQueries: [namedOperations.Query.case],
         })
         if (savedData) {
           notification$.next({
             message: 'Reports submitted successfully. It is pending approval.',
             type: 'success',
           })
-          reset()
+
           resetField('reports')
-          console.log('Fields array ', fields)
         }
       })}
     >

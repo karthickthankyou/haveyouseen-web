@@ -130,12 +130,6 @@ export const toLocalISOString = (date: Date): string => {
   return localISOTime
 }
 
-export const MAP_MODE = {
-  SEARCH: 'SEARCH',
-  CASE: 'CASE',
-  ADD_CASE: 'ADD_CASE',
-}
-
 export const convertReportsToCoordinates = (
   reports?: NonNullable<CaseQuery['case']>['reports'],
 ): [number, number][] => {

@@ -107,10 +107,6 @@ export const useGetCoordinates = ({
     location: { latitude: number; longitude: number }
   }[]
 }): [number, number][] | undefined => {
-  console.log(
-    'coordinates reports',
-    reports?.filter((rep) => rep.type === ReportType.Sighting),
-  )
   return useMemo(
     () =>
       reports

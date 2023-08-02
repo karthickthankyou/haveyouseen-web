@@ -10,7 +10,7 @@ export const KeyValue = ({
   return (
     <div className="text-black">
       <div className="font-semibold">{title}</div>
-      <div>{children}</div>
+      <div className="text-sm">{children}</div>
     </div>
   )
 }

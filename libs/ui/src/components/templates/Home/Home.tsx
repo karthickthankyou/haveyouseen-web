@@ -1,6 +1,6 @@
 import { LngLatBounds } from 'mapbox-gl'
 import { ReactNode, useEffect, useState, useMemo } from 'react'
-import { Popup, Marker, useMap } from 'react-map-gl'
+import { Popup, Marker, useMap, ViewStateChangeEvent } from 'react-map-gl'
 import { format } from 'date-fns'
 
 import {
@@ -8,7 +8,6 @@ import {
   ReportType,
   SearchCasesQuery,
   useCreateApprovedReportMutation,
-  useCaseQuery,
   useUnapprovedReportsQuery,
   useSearchCasesQuery,
   useCaseLazyQuery,
@@ -20,9 +19,10 @@ import {
   IconBulb,
   IconInfoSquare,
   IconPinned,
+  IconRefresh,
   IconX,
 } from '@tabler/icons-react'
-import { ConfidenceMeter } from '../../molecules/ConfidenceMeter'
+
 import Image from 'next/image'
 import { Button } from '../../atoms/Button'
 import { Panel } from '../../organisms/Map/Panel'
@@ -36,8 +36,10 @@ import {
   DisplayLocation,
   MarkerPopup,
   MarkerWithOfficerApproval,
+  useSetHeaderPic,
+  useSetHeaderText,
 } from '../AddNewCase/AddNewCase'
-import { getBounds, useGetCoordinates } from '../NewReport/NewReport'
+import { useGetCoordinates } from '../NewReport/NewReport'
 import { useRouter } from 'next/router'
 
 import { MapLines } from '../../molecules/MapLines'
@@ -48,13 +50,10 @@ import { AddReports } from '../AddReports'
 import { ReportsTimeline } from '../ReportsTimeline'
 import { MissingPersonInfo } from '../../organisms/MissingPersonInfo'
 import { ContactInfo } from '../../organisms/ContactInfo'
-import {
-  MAP_MODE,
-  convertReportsToCoordinates,
-  useKeypress,
-} from '@haveyouseen-org/util'
+import { useKeypress } from '@haveyouseen-org/util'
 import { useAppSelector } from '@haveyouseen-org/store'
 import { selectUid, selectUser } from '@haveyouseen-org/store/user'
+import { DefaultZoomControls } from '../../organisms/Map/ZoomControls/ZoomControls'
 
 export interface IHomePageProps {}
 
@@ -63,18 +62,26 @@ export const HomePage = ({}: IHomePageProps) => {
 
   const router = useRouter()
   const caseId = useMemo(() => router.query.caseId, [router.query.caseId])
-
+  const lat = useMemo(() => router.query.lat, [router.query.lat])
+  const lng = useMemo(() => router.query.lng, [router.query.lng])
+  function handleMapChange(target: ViewStateChangeEvent['target']) {
+    const bounds = target.getBounds()
+    setBounds(bounds)
+  }
   return (
     <div>
-      <Map>
-        {router.query.mode === MAP_MODE.SEARCH ? (
-          <DisplayAllMarkers bounds={bounds} />
-        ) : router.query.mode === MAP_MODE.CASE ? (
+      <Map
+        onDragEnd={(e) => handleMapChange(e.target)}
+        onZoomEnd={(e) => handleMapChange(e.target)}
+        onLoad={(e) => handleMapChange(e.target)}
+      >
+        <Panel position="right-center">
+          <DefaultZoomControls />
+        </Panel>
+        {caseId ? (
           <DisplayOneCase caseId={caseId ? +caseId : undefined} />
-        ) : router.query.mode === MAP_MODE.ADD_CASE ? (
-          <div>Add new case</div>
         ) : (
-          <RedirectToSearch />
+          <DisplayAllMarkers bounds={bounds} />
         )}
       </Map>
     </div>
@@ -100,7 +107,7 @@ export const SidebarInfo = ({
         titleClassName="text-lg"
         title={caseInfo.missingPerson.displayName}
       >
-        <div className="space-y-2 overflow-y-auto h-[80vh]">
+        <div className="space-y-2 overflow-y-auto h-[calc(100vh-8rem)]">
           <MissingPersonInfo missingPerson={caseInfo.missingPerson} />
           <ReportsTimeline reports={reports} />
           <ContactInfo contact={caseInfo.contact} />
@@ -122,21 +129,22 @@ export const SidebarInfo = ({
 export const DisplayOneCase = ({ caseId }: { caseId?: number }) => {
   const { current: thisMap } = useMap()
 
-  const [getCase, { data }] = useCaseLazyQuery()
+  const [getCase, { data, loading }] = useCaseLazyQuery()
   useEffect(() => {
     if (caseId) getCase({ variables: { where: { id: caseId } } })
   }, [caseId])
 
+  useSetHeaderText(data?.case.missingPerson.displayName)
+  useSetHeaderPic(data?.case.missingPerson.images?.[0])
   const sortedReports = useMemo(() => {
     if (data?.case) {
-      return data.case.reports.sort((a, b) => {
+      return [...data.case.reports].sort((a, b) => {
         if (a.time < b.time) return -1
         if (a.time > b.time) return 1
         return 0
       })
     }
-    return []
-  }, [data?.case])
+  }, [data?.case?.reports])
 
   const router = useRouter()
 
@@ -183,22 +191,26 @@ export const DisplayOneCase = ({ caseId }: { caseId?: number }) => {
             size="none"
             onClick={() => {
               thisMap?.flyTo({ zoom: 6 })
-              router.push({ pathname: '/', query: { mode: MAP_MODE.SEARCH } })
+              router.push({ pathname: '/' })
             }}
           >
             Show all cases
           </Button>
         </div>
       </Panel>
-      {sortedReports?.map((caseInfo, i) => (
+      {sortedReports?.map((report, i) => (
         <MarkerWithPopupCase
-          key={caseInfo.id}
-          caseInfo={caseInfo}
+          key={report.id}
+          report={report}
           lastSeen={Boolean(i + 1 === sortedReports.length)}
         />
       ))}
       <ManageUnapprovedReports />
-
+      {loading ? (
+        <Panel position="center-bottom">
+          <IconRefresh className="animate-spin-reverse" />
+        </Panel>
+      ) : null}
       {formReports?.map((report, index) => (
         <MarkerPopup
           index={index}
@@ -295,7 +307,7 @@ export const DisplayAllMarkers = ({ bounds }: { bounds?: LngLatBounds }) => {
   const { data, loading } = useSearchCasesQuery({
     variables: {
       dateFilter: {
-        end: '2022-12-22',
+        end: '2024-12-01',
         start: '2022-12-01',
       },
       locationFilter: {
@@ -309,6 +321,11 @@ export const DisplayAllMarkers = ({ bounds }: { bounds?: LngLatBounds }) => {
 
   return (
     <div>
+      {loading ? (
+        <Panel position="center-bottom">
+          <IconRefresh className="animate-spin-reverse" />
+        </Panel>
+      ) : null}
       {data?.searchCases.map((caseInfo) => (
         <MarkerWithPopup key={caseInfo.case?.id} marker={caseInfo} />
       ))}
@@ -317,30 +334,30 @@ export const DisplayAllMarkers = ({ bounds }: { bounds?: LngLatBounds }) => {
 }
 
 export const MarkerWithPopupCase = ({
-  caseInfo,
+  report,
   lastSeen,
 }: {
-  caseInfo: NonNullable<CaseQuery['case']>['reports'][0]
+  report: NonNullable<CaseQuery['case']>['reports'][0]
   lastSeen?: boolean
 }) => {
   const [showPopup, setShowPopup] = useState(false)
   const { current: map } = useMap()
 
-  if (!caseInfo.location?.latitude) {
+  if (!report.location?.latitude) {
     return null
   }
 
   let MarkerIcon = IconPinned
-  if (caseInfo.type === ReportType.Lead) MarkerIcon = IconBulb
-  else if (caseInfo.type === ReportType.GeneralInformation)
+  if (report.type === ReportType.Lead) MarkerIcon = IconBulb
+  else if (report.type === ReportType.GeneralInformation)
     MarkerIcon = IconInfoSquare
 
   return (
     <div>
       {showPopup ? (
         <Popup
-          latitude={caseInfo?.location?.latitude || 0}
-          longitude={caseInfo?.location?.longitude || 0}
+          latitude={report?.location?.latitude || 0}
+          longitude={report?.location?.longitude || 0}
           onOpen={() => console.log('Opened')}
           closeOnClick={false}
           anchor="bottom"
@@ -349,16 +366,17 @@ export const MarkerWithPopupCase = ({
         >
           <PopupContent onClose={() => setShowPopup(false)}>
             <div className="p-2 space-y-1">
-              <KeyValue title="Status">{caseInfo?.description || '-'}</KeyValue>
-              <ConfidenceMeter confidence={3} />
+              <KeyValue title="Status">{report?.description || '-'}</KeyValue>
+              <KeyValue title="Status">{report?.time || '-'}</KeyValue>
             </div>
           </PopupContent>
         </Popup>
       ) : null}
+
       <Marker
         anchor="bottom"
-        latitude={caseInfo.location?.latitude}
-        longitude={caseInfo.location?.longitude}
+        latitude={report?.location?.latitude}
+        longitude={report?.location?.longitude}
         onClick={() => {
           setShowPopup((state) => !state)
         }}
@@ -366,8 +384,8 @@ export const MarkerWithPopupCase = ({
         <MarkerIcon className={`cursor-pointer ${lastSeen && 'fill-black'}`} />
         {map && map?.getZoom() > 6 ? (
           <div className="absolute py-2 text-xs w-36">
-            <div>{format(new Date(caseInfo.time), 'PP')}</div>
-            <div>{format(new Date(caseInfo.time), 'p')}</div>
+            <div>{format(new Date(report.time), 'PP')}</div>
+            <div>{format(new Date(report.time), 'p')}</div>
           </div>
         ) : null}
       </Marker>
@@ -404,15 +422,28 @@ export const MarkerWithPopup = ({
           closeButton={false}
         >
           <PopupContent onClose={() => setShowPopup(false)}>
-            <div className="p-2 space-y-1">
-              <KeyValue title="Status">{marker.case?.status || '-'}</KeyValue>
-              <ConfidenceMeter confidence={3} />
+            <div className="space-y-1">
+              <Image
+                src={marker.case.missingPerson.images?.[0]}
+                alt=""
+                width={200}
+                height={200}
+              />
+              <div className="p-1">
+                <KeyValue title="Name">
+                  {marker.case.missingPerson.displayName || '-'}
+                </KeyValue>
+                <KeyValue title="Gender">
+                  {marker.case.missingPerson.gender || '-'}
+                </KeyValue>
+                <KeyValue title="Status">{marker.case?.status || '-'}</KeyValue>
+              </div>
               <Button
                 className="w-full"
                 onClick={() =>
                   router.push({
                     pathname: '/',
-                    query: { mode: MAP_MODE.CASE, caseId: marker.case?.id },
+                    query: { caseId: marker.case?.id },
                   })
                 }
               >
@@ -434,7 +465,7 @@ export const MarkerWithPopup = ({
         <Image
           width={30}
           height={30}
-          className="rounded-full cursor-pointer outline-dashed outline-1 outline-gray-300 shadow-black/50"
+          className="rounded-full shadow-lg cursor-pointer outline-gray-300 shadow-black/50"
           alt={marker.case?.missingPerson.displayName || ''}
           src={
             marker.case?.missingPerson?.images?.length
@@ -442,7 +473,9 @@ export const MarkerWithPopup = ({
               : ''
           }
         />
-        <div className="absolute">{marker.case.missingPerson.displayName}</div>
+        <div className="absolute mt-1 leading-3 text-center -translate-x-1/3">
+          {marker.case.missingPerson.displayName}
+        </div>
       </Marker>
     </div>
   )
