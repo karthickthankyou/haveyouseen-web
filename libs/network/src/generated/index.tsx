@@ -157,7 +157,7 @@ export type CreateApprovedReportInput = {
 export type CreateCaseInput = {
   contact: Array<Scalars['String']>
   missingPerson: CreateMissingPersonInput
-  reports: Array<CreateReportInput>
+  reports: Array<CreateReportInputWithoutCaseId>
   status: Status
 }
 
@@ -188,6 +188,7 @@ export type CreateReportInput = {
   audio?: InputMaybe<Scalars['String']>
   caseId?: InputMaybe<Scalars['Int']>
   description: Scalars['String']
+  images: Array<Scalars['String']>
   locationId?: InputMaybe<Scalars['Int']>
   time?: InputMaybe<Scalars['DateTime']>
   type: ReportType
@@ -197,6 +198,8 @@ export type CreateReportInput = {
 export type CreateReportInputWithoutCaseId = {
   audio?: InputMaybe<Scalars['String']>
   description: Scalars['String']
+  images: Array<Scalars['String']>
+  location: CreateLocationInput
   locationId?: InputMaybe<Scalars['Int']>
   time?: InputMaybe<Scalars['DateTime']>
   type: ReportType
@@ -944,6 +947,7 @@ export type UpdateReportInput = {
   caseId?: InputMaybe<Scalars['Int']>
   description?: InputMaybe<Scalars['String']>
   id: Scalars['Int']
+  images?: InputMaybe<Array<Scalars['String']>>
   locationId?: InputMaybe<Scalars['Int']>
   time?: InputMaybe<Scalars['DateTime']>
   type?: InputMaybe<ReportType>

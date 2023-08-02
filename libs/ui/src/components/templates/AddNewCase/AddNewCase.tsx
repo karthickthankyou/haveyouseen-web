@@ -42,10 +42,11 @@ import { Panel } from '../../organisms/Map/Panel'
 import { DefaultZoomControls } from '../../organisms/Map/ZoomControls/ZoomControls'
 import { SearchPlaceBox } from '../../organisms/SearchPlaceBox'
 import { ImageUploadPreview } from '../../organisms/ImageUploadPreview'
-import { useAppDispatch } from '@haveyouseen-org/store'
+import { useAppDispatch, useAppSelector } from '@haveyouseen-org/store'
 import { setVictimName, setVictimPic } from '@haveyouseen-org/store/utils'
 import Accordion from '../../molecules/Accordion'
 import { PlainButton } from '../../atoms/PlainButton'
+import { selectUid } from '@haveyouseen-org/store/user'
 
 export interface IAddNewCaseProps {}
 
@@ -74,7 +75,8 @@ export const AddNewCase = ({}: IAddNewCaseProps) => {
         type: 'error',
       })
   }, [data, error, router])
-  const [{ percent }, uploadImages] = useImageUpload()
+  const [{ percent, uploading }, uploadImages] = useImageUpload()
+  const uid = useAppSelector(selectUid)
 
   return (
     <div>
@@ -94,10 +96,44 @@ export const AddNewCase = ({}: IAddNewCaseProps) => {
           } = data
           const uploadedImages = await uploadImages(data.images)
 
+          const uploadedReportImagesPromises = reports.map((report) =>
+            uploadImages(report.images),
+          )
+          const uploadedReportImages = await Promise.all(
+            uploadedReportImagesPromises,
+          )
+
           createCaseMutation({
             variables: {
               createCaseInput: {
-                reports,
+                reports: reports.map(
+                  (
+                    {
+                      audio,
+                      description,
+                      lat,
+                      lng,
+                      localId,
+                      time,
+                      type,
+                      address,
+                      images,
+                    },
+                    index,
+                  ) => ({
+                    description,
+                    type,
+                    audio,
+                    location: {
+                      latitude: lat || 0,
+                      longitude: lng || 0,
+                      address: address || '',
+                    },
+                    time,
+                    witnessId: uid,
+                    images: uploadedReportImages[index],
+                  }),
+                ),
                 missingPerson: {
                   description,
                   displayName,
@@ -120,7 +156,7 @@ export const AddNewCase = ({}: IAddNewCaseProps) => {
           <AddContacts />
 
           <AddReports />
-          <Button type="submit" fullWidth isLoading={loading}>
+          <Button type="submit" fullWidth isLoading={loading || uploading}>
             Create Case
           </Button>
         </div>

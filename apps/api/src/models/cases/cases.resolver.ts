@@ -10,12 +10,15 @@ import { CasesService } from './cases.service'
 import { Case } from './entities/case.entity'
 import { FindManyCaseArgs, FindUniqueCaseArgs } from './dto/find.args'
 import { CreateCaseInput } from './dto/create-case.input'
-import { UpdateCaseInput } from './dto/update-case.input'
-import { AllowAuthenticated } from 'src/common/decorators/auth/auth.decorator'
+import {
+  AllowAuthenticated,
+  GetUser,
+} from 'src/common/decorators/auth/auth.decorator'
 import { Report } from '../reports/entities/report.entity'
 import { PrismaService } from 'src/common/prisma/prisma.service'
 import { MissingPerson } from '../missing-people/entities/missing-person.entity'
 import { DateFilterInput, LocationFilterInput } from './dto/filter.input'
+import { GetUserType } from 'src/common/types'
 
 @Resolver(() => Case)
 export class CasesResolver {
@@ -26,7 +29,17 @@ export class CasesResolver {
 
   @AllowAuthenticated()
   @Mutation(() => Case)
-  createCase(@Args('createCaseInput') args: CreateCaseInput) {
+  async createCase(
+    @Args('createCaseInput') args: CreateCaseInput,
+    @GetUser() user: GetUserType,
+  ) {
+    const witness = await this.prisma.witness.findUnique({
+      where: { uid: user.uid },
+    })
+    if (!witness?.uid) {
+      await this.prisma.witness.create({ data: { uid: user.uid } })
+    }
+    console.log('witness', witness)
     return this.casesService.create(args)
   }
 

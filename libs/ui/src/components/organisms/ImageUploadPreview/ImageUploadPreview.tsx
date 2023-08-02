@@ -16,7 +16,7 @@ export const ImageUploadPreview = ({
 }: IImageUploadProps) => {
   if (src) {
     return (
-      <div className="relative flex items-center justify-center w-full max-w-sm bg-transparent shadow-lg aspect-square">
+      <div className="relative flex items-center justify-center w-full shadow-lg aspect-square">
         <PlainButton
           className="z-10 flex items-center gap-1 p-2 text-white underline underline-offset-4 bg-black/30"
           onClick={clearImage}
@@ -26,7 +26,7 @@ export const ImageUploadPreview = ({
         <Image
           width={300}
           height={300}
-          className="absolute object-cover aspect-square"
+          className="absolute object-cover w-full h-full aspect-square"
           alt=""
           src={URL.createObjectURL(src)}
           onError={(e) => {

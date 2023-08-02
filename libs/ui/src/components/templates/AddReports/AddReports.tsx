@@ -59,19 +59,27 @@ export const AddReports = () => {
           variables: {
             caseId: +data.caseId,
             createReportsInput: data.reports.map(
-              ({ audio, description, lat, lng, time, type, address }) => ({
+              ({
+                audio,
+                description,
+                lat,
+                lng,
+                time,
+                type,
+                address,
+                images,
+              }) => ({
                 witness: { connect: { uid } },
                 location: {
-                  create: {
-                    latitude: lat,
-                    longitude: lng,
-                    address,
-                  },
+                  latitude: lat,
+                  longitude: lng,
+                  address: address || '',
                 },
                 audio,
                 description,
                 time,
                 type,
+                images,
               }),
             ),
           },

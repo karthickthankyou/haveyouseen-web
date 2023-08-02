@@ -7,14 +7,35 @@ import { UpdateCaseInput } from './dto/update-case.input'
 @Injectable()
 export class CasesService {
   constructor(private readonly prisma: PrismaService) {}
-  create({ missingPerson, reports, ...args }: CreateCaseInput) {
-    return this.prisma.case.create({
+  async create({ missingPerson, reports, ...args }: CreateCaseInput) {
+    const createdMissingPerson = await this.prisma.missingPerson.create({
+      data: missingPerson,
+    })
+    const createdCase = await this.prisma.case.create({
       data: {
         ...args,
-        missingPerson: { create: missingPerson },
-        reports: { createMany: { data: reports } },
+        missingPerson: { connect: { id: createdMissingPerson.id } },
       },
     })
+
+    await Promise.all(
+      reports.map(({ location, locationId, witnessId, ...report }) => {
+        this.prisma.report.create({
+          data: {
+            ...report,
+            case: { connect: { id: createdCase.id } },
+            location: { create: location },
+            witness: {
+              connect: {
+                uid: witnessId,
+              },
+            },
+          },
+        })
+      }),
+    )
+
+    return createdCase
   }
 
   findAll(args: FindManyCaseArgs) {

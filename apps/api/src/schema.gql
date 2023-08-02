@@ -110,9 +110,9 @@ enum BodyType {
 }
 
 type Location {
+  latitude: Float!
+  longitude: Float!
   id: Int!
-  latitude: Int!
-  longitude: Int!
   address: String!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -681,7 +681,7 @@ input CreateCaseInput {
   status: Status!
   contact: [String!]!
   missingPerson: CreateMissingPersonInput!
-  reports: [CreateReportInput!]!
+  reports: [CreateReportInputWithoutCaseId!]!
 }
 
 input CreateMissingPersonInput {
@@ -696,25 +696,26 @@ input CreateMissingPersonInput {
   description: String!
 }
 
-input CreateReportInput {
+input CreateReportInputWithoutCaseId {
   time: DateTime
   locationId: Int
   type: ReportType!
-  caseId: Int
   witnessId: String
   audio: String
+  images: [String!]!
   description: String!
+  location: CreateLocationInput!
 }
 
 input CreateLocationInput {
-  latitude: Int!
-  longitude: Int!
+  latitude: Float!
+  longitude: Float!
   address: String!
 }
 
 input UpdateLocationInput {
-  latitude: Int
-  longitude: Int
+  latitude: Float
+  longitude: Float
   address: String
   id: Int!
 }
@@ -742,12 +743,14 @@ input UpdateOfficerInput {
   uid: String!
 }
 
-input CreateReportInputWithoutCaseId {
+input CreateReportInput {
   time: DateTime
   locationId: Int
   type: ReportType!
+  caseId: Int
   witnessId: String
   audio: String
+  images: [String!]!
   description: String!
 }
 
@@ -758,6 +761,7 @@ input UpdateReportInput {
   caseId: Int
   witnessId: String
   audio: String
+  images: [String!]
   description: String
   id: Int!
 }
