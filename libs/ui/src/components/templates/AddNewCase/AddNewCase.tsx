@@ -43,7 +43,7 @@ import { DefaultZoomControls } from '../../organisms/Map/ZoomControls/ZoomContro
 import { SearchPlaceBox } from '../../organisms/SearchPlaceBox'
 import { ImageUploadPreview } from '../../organisms/ImageUploadPreview'
 import { useAppDispatch } from '@haveyouseen-org/store'
-import { setVictimName } from '@haveyouseen-org/store/utils'
+import { setVictimName, setVictimPic } from '@haveyouseen-org/store/utils'
 import Accordion from '../../molecules/Accordion'
 import { PlainButton } from '../../atoms/PlainButton'
 
@@ -52,8 +52,9 @@ export interface IAddNewCaseProps {}
 export const AddNewCase = ({}: IAddNewCaseProps) => {
   const { handleSubmit } = useFormContext<FormTypeAddNewCase>()
 
-  const { displayName } = useWatch<FormTypeAddNewCase>()
+  const { displayName, images } = useWatch<FormTypeAddNewCase>()
   useSetHeaderText(displayName)
+  useSetHeaderPic(images?.[0] ? URL.createObjectURL(images?.[0]) : '')
 
   const [createCaseMutation, { loading, data, error }] = useCreateCaseMutation()
 
@@ -145,6 +146,21 @@ export const useSetHeaderText = (displayName = '') => {
       dispatch(setVictimName(''))
     }
   }, [displayName])
+}
+
+export const useSetHeaderPic = (url = '') => {
+  const dispatch = useAppDispatch()
+  useEffect(() => {
+    if (url) {
+      dispatch(setVictimPic(url))
+    } else {
+      dispatch(setVictimPic(''))
+    }
+
+    return () => {
+      dispatch(setVictimPic(''))
+    }
+  }, [url])
 }
 
 export const AddCaseDetails = () => {
