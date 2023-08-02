@@ -63,7 +63,6 @@ const LoginForm = ({ className }: ILoginFormProps) => {
       </HtmlLabel>
       <HtmlLabel title="Password" error={errors.password?.message}>
         <HtmlInput
-          className="text-black"
           type="password"
           placeholder="********"
           {...register('password')}
@@ -74,7 +73,7 @@ const LoginForm = ({ className }: ILoginFormProps) => {
       </Button>
       {error ? <FormError error={error.message} /> : null}
       <div className="mt-4 text-sm">
-        Do not have a common kitchen account?
+        Do not have a haveyouseen account?
         <br />
         <Link
           href="/register"

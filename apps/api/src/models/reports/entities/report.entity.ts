@@ -9,6 +9,7 @@ registerEnumType($Enums.ReportType, {
 
 @ObjectType()
 export class Report implements RestrictProperties<Report, ReportType> {
+  images: string[]
   id: number
   createdAt: Date
   updatedAt: Date

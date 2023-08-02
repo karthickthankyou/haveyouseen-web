@@ -5,6 +5,7 @@ import {
   IntFilter,
   RestrictProperties,
   StringFilter,
+  StringListFilter,
 } from 'src/common/dtos/common.input'
 import { ApprovedReportRelationFilter } from 'src/models/approved-reports/dto/where.args'
 import { CaseRelationFilter } from 'src/models/cases/dto/where.args'
@@ -33,6 +34,8 @@ export class EnumReportTypeFilter {
 export class ReportWhereInput
   implements RestrictProperties<ReportWhereInput, Prisma.ReportWhereInput>
 {
+  @Field(() => StringListFilter, { nullable: true })
+  images: StringListFilter
   @Field(() => IntFilter, { nullable: true })
   id: IntFilter
   @Field(() => DateTimeFilter, { nullable: true })

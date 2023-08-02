@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+audio {
+  @apply w-full h-6 bg-white;
+}
+
+.mapboxgl-popup-content {
+  @apply shadow-lg p-0 rounded-none overflow-hidden bg-white/20 backdrop-blur-sm border-x border-t border-white !important;
+}

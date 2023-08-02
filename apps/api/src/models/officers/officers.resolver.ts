@@ -25,7 +25,7 @@ export class OfficersResolver {
     private readonly officersService: OfficersService,
     private readonly prisma: PrismaService,
   ) {}
-  @AllowAuthenticated('officer')
+  @AllowAuthenticated()
   @Mutation(() => Officer)
   createOfficer(@Args('createOfficerInput') args: CreateOfficerInput) {
     return this.officersService.create(args)

@@ -57,7 +57,6 @@ export const NewReport = ({}: INewReportProps) => {
 
   if (!uid) return <Link href="/login">Login</Link>
 
-  console.log('Witnes', witness.data)
   if (!witness.data?.witnessMe) {
     return (
       <Container className="flex items-center justify-center h-96 bg-gray-50">

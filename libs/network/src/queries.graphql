@@ -93,8 +93,22 @@ mutation createOfficer($createOfficerInput: CreateOfficerInput!) {
   }
 }
 
-query unapprovedReports($where: ReportWhereInput) {
-  reports(where: $where) {
+query unapprovedReports(
+  $where: ReportWhereInput
+  $distinct: [ReportScalarFieldEnum!]
+  $skip: Int
+  $take: Int
+  $cursor: ReportWhereUniqueInput
+  $orderBy: [ReportOrderByWithRelationInput!]
+) {
+  reports(
+    where: $where
+    distinct: $distinct
+    skip: $skip
+    take: $take
+    cursor: $cursor
+    orderBy: $orderBy
+  ) {
     id
     caseId
     time

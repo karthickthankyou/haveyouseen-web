@@ -6,6 +6,7 @@ import { RootState } from '..'
 
 export type UtilSliceType = {
   notifications: NotificationType[]
+  victimName?: string
 }
 
 const initialState: UtilSliceType = {
@@ -33,13 +34,21 @@ const utilsSlice = createSlice({
     resetNotification: (state) => {
       state.notifications = []
     },
+    setVictimName: (state, action: PayloadAction<string>) => {
+      state.victimName = action.payload
+    },
   },
 })
 
-export const { addNotification, removeNotification, resetNotification } =
-  utilsSlice.actions
+export const {
+  addNotification,
+  removeNotification,
+  resetNotification,
+  setVictimName,
+} = utilsSlice.actions
 
 export const selectNotifications = (state: RootState) =>
   state.utils.notifications
+export const selectVictimName = (state: RootState) => state.utils.victimName
 
 export const utilsReducer = utilsSlice.reducer

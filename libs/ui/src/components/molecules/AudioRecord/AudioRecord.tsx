@@ -1,19 +1,12 @@
-import { dividerClasses } from '@mui/material'
-import {
-  IconDots,
-  IconMicrophone,
-  IconPlayerStop,
-  IconTrash,
-} from '@tabler/icons-react'
+import { IconMicrophone, IconPlayerStop, IconTrash } from '@tabler/icons-react'
 import {
   deleteObject,
   getDownloadURL,
   ref,
   StorageReference,
   uploadBytes,
-  uploadBytesResumable,
 } from 'firebase/storage'
-import { ChangeEvent, useRef, useState } from 'react'
+import { useState } from 'react'
 
 import { Button } from '../../atoms/Button'
 import { useAppSelector } from '@haveyouseen-org/store'
@@ -76,7 +69,7 @@ export const AudioRecord = ({ setAudio }: IAudioRecordProps) => {
   }
 
   return (
-    <div className="flex items-center justify-center h-24 bg-gray-100">
+    <div className="flex items-center justify-center h-24 bg-white shadow">
       {audioBlob ? (
         <>
           <audio src={URL.createObjectURL(audioBlob)} controls />
@@ -103,6 +96,7 @@ export const AudioRecord = ({ setAudio }: IAudioRecordProps) => {
             <Button
               type="button"
               variant="text"
+              color="white"
               size="none"
               onClick={startRecording}
             >

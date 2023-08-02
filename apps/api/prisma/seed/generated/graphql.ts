@@ -156,6 +156,7 @@ export type CreateApprovedReportInput = {
 export type CreateCaseInput = {
   contact: Array<Scalars['String']>
   missingPerson: CreateMissingPersonInput
+  reports: Array<CreateReportInput>
   status: Status
 }
 
@@ -771,6 +772,7 @@ export type Report = {
   createdAt: Scalars['DateTime']
   description: Scalars['String']
   id: Scalars['Int']
+  images: Array<Scalars['String']>
   location: Location
   locationId?: Maybe<Scalars['Int']>
   time?: Maybe<Scalars['DateTime']>
@@ -798,6 +800,7 @@ export type ReportOrderByWithRelationInput = {
   createdAt?: InputMaybe<SortOrder>
   description?: InputMaybe<SortOrder>
   id?: InputMaybe<SortOrder>
+  images?: InputMaybe<SortOrder>
   location?: InputMaybe<LocationOrderByWithRelationInput>
   locationId?: InputMaybe<SortOrder>
   time?: InputMaybe<SortOrder>
@@ -818,6 +821,7 @@ export enum ReportScalarFieldEnum {
   CreatedAt = 'createdAt',
   Description = 'description',
   Id = 'id',
+  Images = 'images',
   LocationId = 'locationId',
   Time = 'time',
   Type = 'type',
@@ -843,6 +847,7 @@ export type ReportWhereInput = {
   createdAt?: InputMaybe<DateTimeFilter>
   description?: InputMaybe<StringFilter>
   id?: InputMaybe<IntFilter>
+  images?: InputMaybe<StringListFilter>
   location?: InputMaybe<LocationRelationFilter>
   locationId?: InputMaybe<IntFilter>
   time?: InputMaybe<DateTimeFilter>

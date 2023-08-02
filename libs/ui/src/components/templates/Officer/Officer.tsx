@@ -13,6 +13,8 @@ import { useAppSelector } from '@haveyouseen-org/store'
 import { useFormCreateOfficer } from '@haveyouseen-org/forms/src/createOfficer'
 import { selectUid } from '@haveyouseen-org/store/user'
 import { notification$ } from '@haveyouseen-org/util/subjects'
+import { ShowData } from '../../organisms/ShowData'
+import { useTakeSkip } from '@haveyouseen-org/util'
 
 export interface IOfficerProps {}
 
@@ -50,16 +52,17 @@ export const CreateOfficer = memo(() => {
 CreateOfficer.displayName = 'CreateOfficer'
 
 export const Officer = () => {
+  const { setSkip, setTake, skip, take } = useTakeSkip()
   const { data, loading } = useUnapprovedReportsQuery({
     variables: {
       where: { approvedReport: { is: null }, caseId: { equals: 32 } },
     },
   })
   return (
-    <div>
+    <ShowData loading={loading} pagination={{ setSkip, setTake, skip, take }}>
       {data?.reports.map((rep) => (
         <div key={rep.id}>{rep.caseId}</div>
       ))}
-    </div>
+    </ShowData>
   )
 }

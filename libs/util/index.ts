@@ -24,7 +24,6 @@ export const useImageUpload = () => {
     setUploading(true)
 
     const uploadTasks = Array.from(files).map((file: any) => {
-      console.log('file name ', file.name, file)
       const storageRef = ref(storage, `/files/${file.name}`)
       const uploadTask = uploadBytesResumable(storageRef, file)
 
@@ -150,4 +149,12 @@ export const convertReportsToCoordinates = (
         report.location!.latitude,
       ]) || []
   )
+}
+
+export const TAKE_COUNT = 12
+export const useTakeSkip = (initialSkip = 0, initialTake = TAKE_COUNT) => {
+  const [skip, setSkip] = useState(() => initialSkip)
+  const [take, setTake] = useState(() => initialTake)
+
+  return { take, skip, setTake, setSkip }
 }

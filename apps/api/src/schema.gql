@@ -22,6 +22,7 @@ type Report {
   caseId: Int
   witnessId: String
   audio: String
+  images: [String!]!
   id: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -216,6 +217,7 @@ input ReportListRelationFilter {
 }
 
 input ReportWhereInput {
+  images: StringListFilter
   id: IntFilter
   createdAt: DateTimeFilter
   updatedAt: DateTimeFilter
@@ -233,6 +235,14 @@ input ReportWhereInput {
   AND: [ReportWhereInput!]
   OR: [ReportWhereInput!]
   NOT: [ReportWhereInput!]
+}
+
+input StringListFilter {
+  equals: [String!]
+  has: String
+  hasEvery: [String!]
+  hasSome: [String!]
+  isEmpty: Boolean
 }
 
 input IntFilter {
@@ -301,14 +311,6 @@ input EnumStatusFilter {
   in: [Status!]
   notIn: [Status!]
   not: Status
-}
-
-input StringListFilter {
-  equals: [String!]
-  has: String
-  hasEvery: [String!]
-  hasSome: [String!]
-  isEmpty: Boolean
 }
 
 input MissingPersonRelationFilter {
@@ -433,6 +435,7 @@ input ApprovedReportOrderByWithRelationInput {
 }
 
 input ReportOrderByWithRelationInput {
+  images: SortOrder
   id: SortOrder
   createdAt: SortOrder
   updatedAt: SortOrder
@@ -593,6 +596,7 @@ enum ReportScalarFieldEnum {
   caseId
   witnessId
   audio
+  images
 }
 
 type Mutation {
@@ -677,6 +681,7 @@ input CreateCaseInput {
   status: Status!
   contact: [String!]!
   missingPerson: CreateMissingPersonInput!
+  reports: [CreateReportInput!]!
 }
 
 input CreateMissingPersonInput {
@@ -688,6 +693,16 @@ input CreateMissingPersonInput {
   bodyType: BodyType
   displayName: String!
   images: [String!]!
+  description: String!
+}
+
+input CreateReportInput {
+  time: DateTime
+  locationId: Int
+  type: ReportType!
+  caseId: Int
+  witnessId: String
+  audio: String
   description: String!
 }
 
@@ -725,16 +740,6 @@ input CreateOfficerInput {
 input UpdateOfficerInput {
   name: String
   uid: String!
-}
-
-input CreateReportInput {
-  time: DateTime
-  locationId: Int
-  type: ReportType!
-  caseId: Int
-  witnessId: String
-  audio: String
-  description: String!
 }
 
 input CreateReportInputWithoutCaseId {

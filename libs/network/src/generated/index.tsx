@@ -157,6 +157,7 @@ export type CreateApprovedReportInput = {
 export type CreateCaseInput = {
   contact: Array<Scalars['String']>
   missingPerson: CreateMissingPersonInput
+  reports: Array<CreateReportInput>
   status: Status
 }
 
@@ -772,6 +773,7 @@ export type Report = {
   createdAt: Scalars['DateTime']
   description: Scalars['String']
   id: Scalars['Int']
+  images: Array<Scalars['String']>
   location: Location
   locationId?: Maybe<Scalars['Int']>
   time?: Maybe<Scalars['DateTime']>
@@ -799,6 +801,7 @@ export type ReportOrderByWithRelationInput = {
   createdAt?: InputMaybe<SortOrder>
   description?: InputMaybe<SortOrder>
   id?: InputMaybe<SortOrder>
+  images?: InputMaybe<SortOrder>
   location?: InputMaybe<LocationOrderByWithRelationInput>
   locationId?: InputMaybe<SortOrder>
   time?: InputMaybe<SortOrder>
@@ -819,6 +822,7 @@ export enum ReportScalarFieldEnum {
   CreatedAt = 'createdAt',
   Description = 'description',
   Id = 'id',
+  Images = 'images',
   LocationId = 'locationId',
   Time = 'time',
   Type = 'type',
@@ -844,6 +848,7 @@ export type ReportWhereInput = {
   createdAt?: InputMaybe<DateTimeFilter>
   description?: InputMaybe<StringFilter>
   id?: InputMaybe<IntFilter>
+  images?: InputMaybe<StringListFilter>
   location?: InputMaybe<LocationRelationFilter>
   locationId?: InputMaybe<IntFilter>
   time?: InputMaybe<DateTimeFilter>
@@ -1124,6 +1129,13 @@ export type CreateOfficerMutation = {
 
 export type UnapprovedReportsQueryVariables = Exact<{
   where?: InputMaybe<ReportWhereInput>
+  distinct?: InputMaybe<Array<ReportScalarFieldEnum> | ReportScalarFieldEnum>
+  skip?: InputMaybe<Scalars['Int']>
+  take?: InputMaybe<Scalars['Int']>
+  cursor?: InputMaybe<ReportWhereUniqueInput>
+  orderBy?: InputMaybe<
+    Array<ReportOrderByWithRelationInput> | ReportOrderByWithRelationInput
+  >
 }>
 
 export type UnapprovedReportsQuery = {
@@ -1637,8 +1649,22 @@ export type CreateOfficerMutationOptions = Apollo.BaseMutationOptions<
   CreateOfficerMutationVariables
 >
 export const UnapprovedReportsDocument = /*#__PURE__*/ gql`
-  query unapprovedReports($where: ReportWhereInput) {
-    reports(where: $where) {
+  query unapprovedReports(
+    $where: ReportWhereInput
+    $distinct: [ReportScalarFieldEnum!]
+    $skip: Int
+    $take: Int
+    $cursor: ReportWhereUniqueInput
+    $orderBy: [ReportOrderByWithRelationInput!]
+  ) {
+    reports(
+      where: $where
+      distinct: $distinct
+      skip: $skip
+      take: $take
+      cursor: $cursor
+      orderBy: $orderBy
+    ) {
       id
       caseId
       time
@@ -1671,6 +1697,11 @@ export const UnapprovedReportsDocument = /*#__PURE__*/ gql`
  * const { data, loading, error } = useUnapprovedReportsQuery({
  *   variables: {
  *      where: // value for 'where'
+ *      distinct: // value for 'distinct'
+ *      skip: // value for 'skip'
+ *      take: // value for 'take'
+ *      cursor: // value for 'cursor'
+ *      orderBy: // value for 'orderBy'
  *   },
  * });
  */

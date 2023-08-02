@@ -21,7 +21,8 @@ export const MapLines = ({
         source="my-data"
         paint={{
           'line-color': 'rgb(0,0,0)',
-          'line-width': 2,
+          'line-width': 1,
+          'line-dasharray': [4, 2], // This creates a dashed pattern
         }}
       />
     </Source>

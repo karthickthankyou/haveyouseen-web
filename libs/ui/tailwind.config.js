@@ -11,7 +11,7 @@ export default {
   content: ['./src/components/**/*.{js,ts,jsx,tsx}'],
   theme: {
     colors: colorsConfig,
-
+    important: true,
     extend: {
       ringColor: colorsConfig.primary.DEFAULT,
       ringOpacity: 20,

@@ -1,9 +1,9 @@
-import { ReactElement } from 'react'
+import { ReactElement, ReactNode } from 'react'
 import { Disclosure } from '@headlessui/react'
 import { IconChevronDown } from '@tabler/icons-react'
 
 export interface IAccordionProps {
-  title: string
+  title: ReactNode
   children: ReactElement | ReactElement[]
   className?: string
   titleClassName?: string
@@ -21,7 +21,7 @@ const Accordion = ({
     {({ open }) => (
       <>
         <Disclosure.Button
-          className={`flex justify-between items-center w-full py-2 font-medium ${className}`}
+          className={`flex justify-between items-center w-full py-2 ${className}`}
         >
           <span
             className={`text-left ${titleClassName}  ${

@@ -25,7 +25,7 @@ export const Header = ({
   const uid = useAppSelector(selectUid)
 
   return (
-    <header className="z-40">
+    <header className="relative z-40">
       <nav className="fixed top-0 w-full shadow-md shadow-gray-300/10 bg-white/50 backdrop-blur-md">
         <Container className="relative z-50 flex items-center justify-between h-16 py-2">
           <div className="relative flex items-center justify-between w-full gap-16">

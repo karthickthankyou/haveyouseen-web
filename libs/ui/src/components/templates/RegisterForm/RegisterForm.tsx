@@ -29,10 +29,11 @@ export const RegisterForm = ({ className }: { className?: string }) => {
   const { loading, error, success, callAsyncFn } = useAsync(
     (data: FormTypeRegister) => registerUser(data),
     (err: any) => {
+      console.log('err', err)
       if (err.code === 'auth/user-not-found') {
         return 'Invalid email.'
-      } else if (err.code === 'auth/wrong-password') {
-        return 'Invalid password.'
+      } else if (err.code === 'auth/email-already-in-use') {
+        return 'Email already in use.'
       }
       return 'Something went wrong. Please try again.'
     },
@@ -41,7 +42,9 @@ export const RegisterForm = ({ className }: { className?: string }) => {
   const router = useRouter()
 
   const uid = useAppSelector(selectUid)
-
+  if (error) {
+    notification$.next({ message: error, type: 'error' })
+  }
   if (uid) {
     notification$.next({ message: 'Authenticated. ' })
     router.push('/')
@@ -55,15 +58,10 @@ export const RegisterForm = ({ className }: { className?: string }) => {
       })}
     >
       <HtmlLabel title="Email" error={errors.email?.message}>
-        <HtmlInput
-          className="text-black"
-          placeholder="Enter the email."
-          {...register('email')}
-        />
+        <HtmlInput placeholder="Enter the email." {...register('email')} />
       </HtmlLabel>
       <HtmlLabel title="Password" error={errors.password?.message}>
         <HtmlInput
-          className="text-black"
           type="password"
           placeholder="······"
           {...register('password')}
@@ -71,7 +69,6 @@ export const RegisterForm = ({ className }: { className?: string }) => {
       </HtmlLabel>
       <HtmlLabel title="Display name" error={errors.displayName?.message}>
         <HtmlInput
-          className="text-black"
           placeholder="Enter your name."
           {...register('displayName')}
         />
@@ -85,7 +82,7 @@ export const RegisterForm = ({ className }: { className?: string }) => {
         Create account
       </Button>
       <div className="mt-4 text-sm ">
-        Already have an autospace account?
+        Already have an Have you seen account?
         <br />
         <Link href="/login" className="font-bold underline underline-offset-4">
           Login

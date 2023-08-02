@@ -15,6 +15,8 @@ export class ReportOrderByWithRelationInput
     >
 {
   @Field(() => Prisma.SortOrder, { nullable: true })
+  images: Prisma.SortOrder
+  @Field(() => Prisma.SortOrder, { nullable: true })
   id: Prisma.SortOrder
   @Field(() => Prisma.SortOrder, { nullable: true })
   createdAt: Prisma.SortOrder

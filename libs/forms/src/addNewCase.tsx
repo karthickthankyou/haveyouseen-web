@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { ReactNode } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import {
   Gender,
@@ -16,6 +17,7 @@ export const newReportFormSchema = z.object({
   address: z.string().optional(),
   type: z.nativeEnum(ReportType),
   audio: z.string().nullable(),
+  images: z.any().optional(),
 })
 
 export const contactSchema = z.object({
@@ -25,7 +27,7 @@ export const contactSchema = z.object({
 export const addNewCaseFormSchema = z.object({
   status: z.nativeEnum(Status),
   displayName: z.string(),
-  images: z.string().array(),
+  images: z.any().optional(),
   description: z.string(),
   dob: z.string(),
   gender: z.nativeEnum(Gender),
@@ -41,3 +43,13 @@ export const useFormAddNewCase = () =>
   useForm<FormTypeAddNewCase>({
     resolver: zodResolver(addNewCaseFormSchema),
   })
+
+export const FormProviderAddNewCase = ({
+  children,
+}: {
+  children: ReactNode
+}) => {
+  const methods = useFormAddNewCase()
+
+  return <FormProvider {...methods}>{children}</FormProvider>
+}

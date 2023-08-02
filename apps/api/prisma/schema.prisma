@@ -78,6 +78,7 @@ model Report {
     witness        Witness?        @relation(fields: [witnessId], references: [uid])
     witnessId      String?
     audio          String?
+    images         String[]
 }
 
 model ApprovedReport {

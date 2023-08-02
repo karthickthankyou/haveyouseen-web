@@ -18,7 +18,7 @@ export const Map = ({ height = 'calc(100vh - 4rem)', ...props }: IMapProps) => {
       mapStyle="mapbox://styles/iamkarthick/clebahxqe001701mo1i1adtw3"
       mapboxAccessToken="pk.eyJ1IjoiaWFta2FydGhpY2siLCJhIjoiY2t4b3AwNjZ0MGtkczJub2VqMDZ6OWNrYSJ9.-FMKkHQHvHUeDEvxz2RJWQ"
       style={{ height }}
-      //   pitch={45}
+      pitch={22.5}
       scrollZoom={false}
     >
       <StyleMap />
