@@ -11,9 +11,8 @@ import { AppLevelListeners } from '@haveyouseen-org/ui/src/components/atoms/AppL
 import { Notifications } from '@haveyouseen-org/ui/src/components/organisms/Notifications'
 
 const MENUITEMS: MenuItem[] = [
-  { label: 'New Case', href: '/add-new-case', loggedIn: true },
   { label: 'About', href: '/about', loggedIn: false },
-  { label: 'Search', href: '/search', loggedIn: true },
+  { label: 'Search', href: '/', loggedIn: true },
 ]
 const SUBMENUITEMS: MenuItem[] = [
   ...MENUITEMS,

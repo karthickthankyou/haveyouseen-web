@@ -12,8 +12,7 @@ import { Notifications } from '@haveyouseen-org/ui/src/components/organisms/Noti
 
 const MENUITEMS: MenuItem[] = [
   { label: 'New Case', href: '/add-new-case', loggedIn: true },
-  { label: 'Search', href: '/search', loggedIn: true },
-  { label: 'Officer', href: '/officer', loggedIn: true },
+  { label: 'Search', href: '/', loggedIn: true },
 ]
 const SUBMENUITEMS: MenuItem[] = [
   ...MENUITEMS,
