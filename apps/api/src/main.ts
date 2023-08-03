@@ -6,7 +6,6 @@ const port = process.env.PORT || 3000
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
-  app.use(csurf())
 
   const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',')
 
@@ -18,6 +17,7 @@ async function bootstrap() {
     methods: '*',
   })
 
+  app.use(csurf())
   await app.listen(port, '0.0.0.0')
 }
 bootstrap()
