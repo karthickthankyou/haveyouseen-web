@@ -87,9 +87,9 @@ model ApprovedReport {
     updatedAt DateTime @updatedAt
     report    Report   @relation(fields: [id], references: [id])
 
-    description String
-    officer     Officer? @relation(fields: [officerId], references: [uid])
-    officerId   String?
+    description String?
+    officer     Officer @relation(fields: [officerId], references: [uid])
+    officerId   String
 }
 
 model Location {

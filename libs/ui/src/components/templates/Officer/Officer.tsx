@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useState } from 'react'
 
 import { Button } from '../../atoms/Button'
 import { Form } from '../../atoms/Form'
@@ -15,6 +15,7 @@ import { selectUid } from '@haveyouseen-org/store/user'
 import { notification$ } from '@haveyouseen-org/util/subjects'
 import { ShowData } from '../../organisms/ShowData'
 import { useTakeSkip } from '@haveyouseen-org/util'
+import { format } from 'date-fns'
 
 export interface IOfficerProps {}
 
@@ -52,17 +53,45 @@ export const CreateOfficer = memo(() => {
 CreateOfficer.displayName = 'CreateOfficer'
 
 export const Officer = () => {
+  const [caseId, setCaseId] = useState<number | null>(null)
   const { setSkip, setTake, skip, take } = useTakeSkip()
   const { data, loading } = useUnapprovedReportsQuery({
     variables: {
-      where: { approvedReport: { is: null }, caseId: { equals: 32 } },
+      where: {
+        // approvedReport: { is: null },
+        ...(caseId ? { caseId: { equals: caseId } } : null),
+      },
     },
   })
+  console.log('data', data)
   return (
-    <ShowData loading={loading} pagination={{ setSkip, setTake, skip, take }}>
-      {data?.reports.map((rep) => (
-        <div key={rep.id}>{rep.caseId}</div>
-      ))}
-    </ShowData>
+    <div>
+      <HtmlLabel title="Case ID">
+        <HtmlInput
+          value={caseId?.toString()}
+          onChange={(e) => setCaseId(+e.target.value)}
+        />
+      </HtmlLabel>
+      <ShowData
+        loading={loading}
+        pagination={{
+          setSkip,
+          setTake,
+          skip,
+          take,
+          resultCount: data?.reports.length,
+        }}
+      >
+        {data?.reports.map((report) => (
+          <div key={report.id}>
+            <div>{report.location?.latitude}</div>
+            <div>{report.type}</div>
+            <div>{report.caseId}</div>
+            <div>{report.description}</div>
+            <div>{format(new Date(report.time), 'PPp')}</div>
+          </div>
+        ))}
+      </ShowData>
+    </div>
   )
 }

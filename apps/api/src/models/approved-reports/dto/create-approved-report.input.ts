@@ -4,6 +4,6 @@ import { ApprovedReport } from '../entities/approved-report.entity'
 @InputType()
 export class CreateApprovedReportInput extends PickType(
   ApprovedReport,
-  ['description', 'officerId', 'id'],
+  ['description', 'id'],
   InputType,
 ) {}

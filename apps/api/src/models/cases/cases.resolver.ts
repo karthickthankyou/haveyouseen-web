@@ -12,6 +12,7 @@ import { FindManyCaseArgs, FindUniqueCaseArgs } from './dto/find.args'
 import { CreateCaseInput } from './dto/create-case.input'
 import {
   AllowAuthenticated,
+  AllowAuthenticatedOptional,
   GetUser,
 } from 'src/common/decorators/auth/auth.decorator'
 import { Report } from '../reports/entities/report.entity'
@@ -59,14 +60,22 @@ export class CasesResolver {
   //     return this.casesService.update(args)
   //   }
 
+  @AllowAuthenticatedOptional()
   @Query(() => [Report])
-  searchCases(
+  async searchCases(
     @Args('dateFilter', { nullable: true }) dateFilter: DateFilterInput,
     @Args('locationFilter')
     locationFilter: LocationFilterInput,
+    @GetUser() user: GetUserType,
   ) {
     const { end, start } = dateFilter
     const { nw_lat, nw_lng, se_lat, se_lng } = locationFilter
+
+    const officer = user?.uid
+      ? await this.prisma.officer.findUnique({
+          where: { uid: user.uid },
+        })
+      : null
 
     return this.prisma.report.findMany({
       distinct: ['caseId'],
@@ -88,10 +97,19 @@ export class CasesResolver {
     return this.casesService.remove(args)
   }
 
+  @AllowAuthenticatedOptional()
   @ResolveField(() => [Report])
-  reports(@Parent() parent: Case) {
+  async reports(@Parent() parent: Case, @GetUser() user: GetUserType) {
+    const officer = user?.uid
+      ? await this.prisma.officer.findUnique({
+          where: { uid: user?.uid },
+        })
+      : null
     return this.prisma.report.findMany({
-      where: { caseId: { equals: parent.id } },
+      where: {
+        caseId: { equals: parent.id },
+        ...(!officer?.uid ? { approvedReport: { isNot: null } } : null),
+      },
     })
   }
 

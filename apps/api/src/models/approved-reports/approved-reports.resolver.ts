@@ -14,10 +14,14 @@ import {
 } from './dto/find.args'
 import { CreateApprovedReportInput } from './dto/create-approved-report.input'
 import { UpdateApprovedReportInput } from './dto/update-approved-report.input'
-import { AllowAuthenticated } from 'src/common/decorators/auth/auth.decorator'
+import {
+  AllowAuthenticated,
+  GetUser,
+} from 'src/common/decorators/auth/auth.decorator'
 import { Officer } from '../officers/entities/officer.entity'
 import { PrismaService } from 'src/common/prisma/prisma.service'
 import { Report } from '../reports/entities/report.entity'
+import { GetUserType } from 'src/common/types'
 
 @Resolver(() => ApprovedReport)
 export class ApprovedReportsResolver {
@@ -26,12 +30,16 @@ export class ApprovedReportsResolver {
     private readonly prisma: PrismaService,
   ) {}
 
-  @AllowAuthenticated('officer')
+  @AllowAuthenticated()
   @Mutation(() => ApprovedReport)
-  createApprovedReport(
+  async createApprovedReport(
     @Args('createApprovedReportInput') args: CreateApprovedReportInput,
+    @GetUser() user: GetUserType,
   ) {
-    return this.approvedReportsService.create(args)
+    const officer = await this.prisma.officer.findUnique({
+      where: { uid: user.uid },
+    })
+    return this.approvedReportsService.create(args, officer.uid)
   }
 
   @Query(() => [ApprovedReport], { name: 'approvedReports' })
@@ -51,13 +59,14 @@ export class ApprovedReportsResolver {
   ) {
     return this.approvedReportsService.update(args)
   }
-  @AllowAuthenticated('officer')
+
+  @AllowAuthenticated('admin')
   @Mutation(() => ApprovedReport)
   removeApprovedReport(@Args() args: FindUniqueApprovedReportArgs) {
     return this.approvedReportsService.remove(args)
   }
 
-  @ResolveField(() => Officer)
+  @ResolveField(() => Officer, { nullable: true })
   officer(@Parent() parent: ApprovedReport) {
     return this.prisma.officer.findUnique({
       where: { uid: parent.officerId },

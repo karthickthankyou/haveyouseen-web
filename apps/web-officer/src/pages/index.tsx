@@ -1,21 +1,12 @@
-import { Inter } from 'next/font/google'
-import { Officer } from '@haveyouseen-org/ui/src/components/templates/Officer'
-import { Container } from '@haveyouseen-org/ui/src/components/atoms/Container'
-import { IsLoggedIn } from '@haveyouseen-org/ui/src/components/organisms/IsLoggedIn'
-import { IsOfficer } from '@haveyouseen-org/ui/src/components/organisms/IsOfficer'
+import { Tienne } from 'next/font/google'
+import { HomePage } from '@haveyouseen-org/ui/src/components/templates/Home'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Tienne({ weight: ['400', '700', '900'], subsets: ['latin'] })
 
-export default function Home() {
+export default function Search() {
   return (
     <main className={` ${inter.className}`}>
-      <Container>
-        <IsLoggedIn>
-          <IsOfficer>
-            <Officer />
-          </IsOfficer>
-        </IsLoggedIn>
-      </Container>
+      <HomePage />
     </main>
   )
 }

@@ -49,6 +49,10 @@ query case($where: CaseWhereUniqueInput!) {
       time
       id
       type
+      approvedReport {
+        id
+        description
+      }
       description
       location {
         latitude

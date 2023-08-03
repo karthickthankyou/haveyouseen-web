@@ -71,6 +71,7 @@ export const HomePage = ({}: IHomePageProps) => {
   return (
     <div>
       <Map
+        initialViewState={{ latitude: +(lat || 0), longitude: +(lng || 0) }}
         onDragEnd={(e) => handleMapChange(e.target)}
         onZoomEnd={(e) => handleMapChange(e.target)}
         onLoad={(e) => handleMapChange(e.target)}
@@ -205,7 +206,7 @@ export const DisplayOneCase = ({ caseId }: { caseId?: number }) => {
           lastSeen={Boolean(i + 1 === sortedReports.length)}
         />
       ))}
-      <ManageUnapprovedReports />
+      {/* <ManageUnapprovedReports /> */}
       {loading ? (
         <Panel position="center-bottom">
           <IconRefresh className="animate-spin-reverse" />
@@ -237,8 +238,6 @@ export const ManageUnapprovedReports = () => {
     })
 
   const [officerDescription, setOfficerDescription] = useState<string>('')
-
-  const uid = useAppSelector(selectUid)
 
   const [approveReportMutation, { loading }] = useCreateApprovedReportMutation()
 
@@ -285,7 +284,6 @@ export const ManageUnapprovedReports = () => {
                         createApprovedReportInput: {
                           id: +id,
                           description: officerDescription,
-                          officerId: uid,
                         },
                       },
                     })
@@ -318,7 +316,11 @@ export const DisplayAllMarkers = ({ bounds }: { bounds?: LngLatBounds }) => {
       },
     },
   })
+  const [displayData, setDisplayData] = useState(data?.searchCases)
 
+  console.log('displayData', displayData)
+
+  console.log(data, loading)
   return (
     <div>
       {loading ? (
@@ -326,7 +328,7 @@ export const DisplayAllMarkers = ({ bounds }: { bounds?: LngLatBounds }) => {
           <IconRefresh className="animate-spin-reverse" />
         </Panel>
       ) : null}
-      {data?.searchCases.map((caseInfo) => (
+      {data?.searchCases?.map((caseInfo) => (
         <MarkerWithPopup key={caseInfo.case?.id} marker={caseInfo} />
       ))}
     </div>
@@ -381,7 +383,13 @@ export const MarkerWithPopupCase = ({
           setShowPopup((state) => !state)
         }}
       >
-        <MarkerIcon className={`cursor-pointer ${lastSeen && 'fill-black'}`} />
+        <MarkerIcon
+          className={`cursor-pointer ${
+            report.approvedReport
+              ? 'text-black'
+              : 'text-gray-300 fill-gray-300 animate-pulse'
+          } ${lastSeen && 'fill-black'}`}
+        />
         {map && map?.getZoom() > 6 ? (
           <div className="absolute py-2 text-xs w-36">
             <div>{format(new Date(report.time), 'PP')}</div>

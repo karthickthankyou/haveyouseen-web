@@ -26,10 +26,10 @@ export type Scalars = {
 export type ApprovedReport = {
   __typename?: 'ApprovedReport'
   createdAt: Scalars['DateTime']
-  description: Scalars['String']
+  description?: Maybe<Scalars['String']>
   id: Scalars['Int']
-  officer: Officer
-  officerId?: Maybe<Scalars['String']>
+  officer?: Maybe<Officer>
+  officerId: Scalars['String']
   report: Report
   updatedAt: Scalars['DateTime']
 }
@@ -109,9 +109,9 @@ export type CaseOrderByWithRelationInput = {
   contact?: InputMaybe<SortOrder>
   createdAt?: InputMaybe<SortOrder>
   id?: InputMaybe<SortOrder>
-  missingPerson?: InputMaybe<SortOrder>
+  missingPerson?: InputMaybe<MissingPersonOrderByWithRelationInput>
   missingPersonId?: InputMaybe<SortOrder>
-  reports?: InputMaybe<SortOrder>
+  reports?: InputMaybe<ReportOrderByRelationAggregateInput>
   status?: InputMaybe<SortOrder>
   updatedAt?: InputMaybe<SortOrder>
 }
@@ -149,9 +149,8 @@ export type CaseWhereUniqueInput = {
 }
 
 export type CreateApprovedReportInput = {
-  description: Scalars['String']
+  description?: InputMaybe<Scalars['String']>
   id: Scalars['Int']
-  officerId?: InputMaybe<Scalars['String']>
 }
 
 export type CreateCaseInput = {
@@ -163,8 +162,8 @@ export type CreateCaseInput = {
 
 export type CreateLocationInput = {
   address: Scalars['String']
-  latitude: Scalars['Int']
-  longitude: Scalars['Int']
+  latitude: Scalars['Float']
+  longitude: Scalars['Float']
 }
 
 export type CreateMissingPersonInput = {
@@ -207,8 +206,8 @@ export type CreateReportInputWithoutCaseId = {
 }
 
 export type CreateWitnessInput = {
-  name: Scalars['String']
-  uid?: InputMaybe<Scalars['String']>
+  name?: InputMaybe<Scalars['String']>
+  uid: Scalars['String']
 }
 
 export type DateFilterInput = {
@@ -284,8 +283,8 @@ export type Location = {
   address: Scalars['String']
   createdAt: Scalars['DateTime']
   id: Scalars['Int']
-  latitude: Scalars['Int']
-  longitude: Scalars['Int']
+  latitude: Scalars['Float']
+  longitude: Scalars['Float']
   reports: Array<Report>
   updatedAt: Scalars['DateTime']
 }
@@ -357,7 +356,7 @@ export type LoginOutput = {
 export type MissingPerson = {
   __typename?: 'MissingPerson'
   bodyType?: Maybe<BodyType>
-  case: Case
+  case?: Maybe<Case>
   createdAt: Scalars['DateTime']
   description: Scalars['String']
   displayName: Scalars['String']
@@ -769,20 +768,20 @@ export type RegisterOutput = {
 
 export type Report = {
   __typename?: 'Report'
-  approvedReport: ApprovedReport
+  approvedReport?: Maybe<ApprovedReport>
   audio?: Maybe<Scalars['String']>
-  case: Case
+  case?: Maybe<Case>
   caseId?: Maybe<Scalars['Int']>
   createdAt: Scalars['DateTime']
   description: Scalars['String']
   id: Scalars['Int']
   images: Array<Scalars['String']>
-  location: Location
+  location?: Maybe<Location>
   locationId?: Maybe<Scalars['Int']>
   time?: Maybe<Scalars['DateTime']>
   type: ReportType
   updatedAt: Scalars['DateTime']
-  witness: Witness
+  witness?: Maybe<Witness>
   witnessId?: Maybe<Scalars['String']>
 }
 
@@ -914,14 +913,13 @@ export type StringListFilter = {
 export type UpdateApprovedReportInput = {
   description?: InputMaybe<Scalars['String']>
   id: Scalars['Int']
-  officerId?: InputMaybe<Scalars['String']>
 }
 
 export type UpdateLocationInput = {
   address?: InputMaybe<Scalars['String']>
   id: Scalars['Int']
-  latitude?: InputMaybe<Scalars['Int']>
-  longitude?: InputMaybe<Scalars['Int']>
+  latitude?: InputMaybe<Scalars['Float']>
+  longitude?: InputMaybe<Scalars['Float']>
 }
 
 export type UpdateMissingPersonInput = {
@@ -962,9 +960,9 @@ export type UpdateWitnessInput = {
 export type Witness = {
   __typename?: 'Witness'
   createdAt: Scalars['DateTime']
-  name: Scalars['String']
+  name?: Maybe<Scalars['String']>
   reports: Array<Report>
-  uid?: Maybe<Scalars['String']>
+  uid: Scalars['String']
   updatedAt: Scalars['DateTime']
 }
 
@@ -1016,7 +1014,7 @@ export type CreateWitnessMutationVariables = Exact<{
 
 export type CreateWitnessMutation = {
   __typename?: 'Mutation'
-  createWitness: { __typename?: 'Witness'; uid?: string | null }
+  createWitness: { __typename?: 'Witness'; uid: string }
 }
 
 export type SearchCasesQueryVariables = Exact<{
@@ -1028,7 +1026,7 @@ export type SearchCasesQuery = {
   __typename?: 'Query'
   searchCases: Array<{
     __typename?: 'Report'
-    case: {
+    case?: {
       __typename?: 'Case'
       status: Status
       id: number
@@ -1038,13 +1036,13 @@ export type SearchCasesQuery = {
         displayName: string
         gender: Gender
       }
-    }
-    location: {
+    } | null
+    location?: {
       __typename?: 'Location'
       address: string
       latitude: number
       longitude: number
-    }
+    } | null
   }>
 }
 
@@ -1076,7 +1074,16 @@ export type CaseQuery = {
       id: number
       type: ReportType
       description: string
-      location: { __typename?: 'Location'; latitude: number; longitude: number }
+      approvedReport?: {
+        __typename?: 'ApprovedReport'
+        id: number
+        description?: string | null
+      } | null
+      location?: {
+        __typename?: 'Location'
+        latitude: number
+        longitude: number
+      } | null
     }>
   }
 }
@@ -1109,9 +1116,9 @@ export type WitnessMeQuery = {
   __typename?: 'Query'
   witnessMe: {
     __typename?: 'Witness'
-    uid?: string | null
+    uid: string
     createdAt: any
-    name: string
+    name?: string | null
     updatedAt: any
   }
 }
@@ -1153,8 +1160,16 @@ export type UnapprovedReportsQuery = {
     audio?: string | null
     description: string
     createdAt: any
-    location: { __typename?: 'Location'; latitude: number; longitude: number }
-    witness: { __typename?: 'Witness'; uid?: string | null; name: string }
+    location?: {
+      __typename?: 'Location'
+      latitude: number
+      longitude: number
+    } | null
+    witness?: {
+      __typename?: 'Witness'
+      uid: string
+      name?: string | null
+    } | null
   }>
 }
 
@@ -1164,7 +1179,10 @@ export type CreateApprovedReportMutationVariables = Exact<{
 
 export type CreateApprovedReportMutation = {
   __typename?: 'Mutation'
-  createApprovedReport: { __typename?: 'ApprovedReport'; description: string }
+  createApprovedReport: {
+    __typename?: 'ApprovedReport'
+    description?: string | null
+  }
 }
 
 export type CreateReportsMutationVariables = Exact<{
@@ -1388,6 +1406,10 @@ export const CaseDocument = /*#__PURE__*/ gql`
         time
         id
         type
+        approvedReport {
+          id
+          description
+        }
         description
         location {
           latitude

@@ -10,9 +10,12 @@ import { UpdateApprovedReportInput } from './dto/update-approved-report.input'
 @Injectable()
 export class ApprovedReportsService {
   constructor(private readonly prisma: PrismaService) {}
-  create(createApprovedReportInput: CreateApprovedReportInput) {
+  create(
+    createApprovedReportInput: CreateApprovedReportInput,
+    officerId: string,
+  ) {
     return this.prisma.approvedReport.create({
-      data: createApprovedReportInput,
+      data: { ...createApprovedReportInput, officerId },
     })
   }
 

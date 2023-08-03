@@ -97,28 +97,28 @@ export class ReportsResolver {
     return this.reportsService.remove(args)
   }
 
-  @ResolveField(() => Location)
+  @ResolveField(() => Location, { nullable: true })
   location(@Parent() parent: Report) {
     return this.prisma.location.findUnique({
       where: { id: parent.locationId },
     })
   }
 
-  @ResolveField(() => ApprovedReport)
+  @ResolveField(() => ApprovedReport, { nullable: true })
   approvedReport(@Parent() parent: Report) {
     return this.prisma.approvedReport.findUnique({
       where: { id: parent.id },
     })
   }
 
-  @ResolveField(() => Witness)
+  @ResolveField(() => Witness, { nullable: true })
   witness(@Parent() parent: Report) {
     return this.prisma.witness.findUnique({
       where: { uid: parent.witnessId },
     })
   }
 
-  @ResolveField(() => Case)
+  @ResolveField(() => Case, { nullable: true })
   case(@Parent() parent: Report) {
     return this.prisma.case.findUnique({
       where: { id: parent.caseId },

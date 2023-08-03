@@ -1,6 +1,8 @@
 import { Field, InputType } from '@nestjs/graphql'
 import { Prisma } from '@prisma/client'
 import { RestrictProperties } from 'src/common/dtos/common.input'
+import { MissingPersonOrderByWithRelationInput } from 'src/models/missing-people/dto/orderBy.args'
+import { ReportOrderByRelationAggregateInput } from 'src/models/reports/dto/orderBy.args'
 
 @InputType()
 export class CaseOrderByWithRelationInput
@@ -22,10 +24,10 @@ export class CaseOrderByWithRelationInput
   status: Prisma.SortOrder
   @Field(() => Prisma.SortOrder, { nullable: true })
   contact: Prisma.SortOrder
-  @Field(() => Prisma.SortOrder, { nullable: true })
-  missingPerson: Prisma.MissingPersonOrderByWithRelationInput
-  @Field(() => Prisma.SortOrder, { nullable: true })
-  reports: Prisma.ReportOrderByRelationAggregateInput
+  @Field(() => MissingPersonOrderByWithRelationInput, { nullable: true })
+  missingPerson: MissingPersonOrderByWithRelationInput
+  @Field(() => ReportOrderByRelationAggregateInput, { nullable: true })
+  reports: ReportOrderByRelationAggregateInput
   // Todo: Add properties
   // @Field(() => Prisma.SortOrder, { nullable: true })
   // id: Prisma.SortOrder

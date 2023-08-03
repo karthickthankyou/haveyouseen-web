@@ -55,7 +55,7 @@ export class MissingPeopleResolver {
   removeMissingPerson(@Args() args: FindUniqueMissingPersonArgs) {
     return this.missingPeopleService.remove(args)
   }
-  @ResolveField(() => Case)
+  @ResolveField(() => Case, { nullable: true })
   case(@Parent() parent: MissingPerson) {
     return this.prisma.case.findUnique({
       where: { missingPersonId: parent.id },

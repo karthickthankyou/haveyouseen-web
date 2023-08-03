@@ -3,10 +3,10 @@
 # ------------------------------------------------------
 
 type Witness {
-  uid: String
+  name: String
   createdAt: DateTime!
   updatedAt: DateTime!
-  name: String!
+  uid: String!
   reports: [Report!]!
 }
 
@@ -27,10 +27,10 @@ type Report {
   createdAt: DateTime!
   updatedAt: DateTime!
   description: String!
-  location: Location!
-  approvedReport: ApprovedReport!
-  witness: Witness!
-  case: Case!
+  location: Location
+  approvedReport: ApprovedReport
+  witness: Witness
+  case: Case
 }
 
 """Enum for ReportType"""
@@ -41,12 +41,12 @@ enum ReportType {
 }
 
 type ApprovedReport {
-  officerId: String
+  description: String
   id: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
-  description: String!
-  officer: Officer!
+  officerId: String!
+  officer: Officer
   report: Report!
 }
 
@@ -89,7 +89,7 @@ type MissingPerson {
   displayName: String!
   images: [String!]!
   description: String!
-  case: Case!
+  case: Case
 }
 
 """Enum for Gender"""
@@ -469,8 +469,24 @@ input CaseOrderByWithRelationInput {
   missingPersonId: SortOrder
   status: SortOrder
   contact: SortOrder
-  missingPerson: SortOrder
-  reports: SortOrder
+  missingPerson: MissingPersonOrderByWithRelationInput
+  reports: ReportOrderByRelationAggregateInput
+}
+
+input MissingPersonOrderByWithRelationInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  displayName: SortOrder
+  images: SortOrder
+  dob: SortOrder
+  gender: SortOrder
+  description: SortOrder
+  missingSince: SortOrder
+  height: SortOrder
+  weight: SortOrder
+  bodyType: SortOrder
+  case: CaseOrderByWithRelationInput
 }
 
 input OfficerOrderByWithRelationInput {
@@ -533,22 +549,6 @@ enum LocationScalarFieldEnum {
   address
   createdAt
   updatedAt
-}
-
-input MissingPersonOrderByWithRelationInput {
-  id: SortOrder
-  createdAt: SortOrder
-  updatedAt: SortOrder
-  displayName: SortOrder
-  images: SortOrder
-  dob: SortOrder
-  gender: SortOrder
-  description: SortOrder
-  missingSince: SortOrder
-  height: SortOrder
-  weight: SortOrder
-  bodyType: SortOrder
-  case: CaseOrderByWithRelationInput
 }
 
 input MissingPersonWhereUniqueInput {
@@ -656,25 +656,23 @@ enum RoleEnum {
 }
 
 input CreateWitnessInput {
-  uid: String
-  name: String!
+  name: String
+  uid: String!
 }
 
 input UpdateWitnessInput {
-  uid: String!
   name: String
+  uid: String!
 }
 
 input CreateApprovedReportInput {
-  officerId: String
+  description: String
   id: Int!
-  description: String!
 }
 
 input UpdateApprovedReportInput {
-  officerId: String
-  id: Int!
   description: String
+  id: Int!
 }
 
 input CreateCaseInput {

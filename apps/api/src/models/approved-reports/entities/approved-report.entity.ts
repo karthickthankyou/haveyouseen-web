@@ -9,8 +9,8 @@ export class ApprovedReport
   id: number
   createdAt: Date
   updatedAt: Date
-  description: string
   @Field({ nullable: true })
+  description: string
   officerId: string
   // Todo fill all properties. To make it nullable add below.
   // @Field(() => String, { nullable: true })
