@@ -14,7 +14,7 @@ import {
 } from '@haveyouseen-org/forms/src/signUp'
 import { useAppSelector } from '@haveyouseen-org/store'
 import { selectUid } from '@haveyouseen-org/store/user'
-import { IconBrandGithub, IconBrandGoogle } from '@tabler/icons-react'
+import { IconBrandGoogle } from '@tabler/icons-react'
 
 import { notification$ } from '@haveyouseen-org/util/subjects'
 import { useRouter } from 'next/router'
