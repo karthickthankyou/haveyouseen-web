@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 audio {
-  @apply w-full h-6 bg-white;
+  @apply w-full h-8 bg-white;
 }
 
 .mapboxgl-popup-content {

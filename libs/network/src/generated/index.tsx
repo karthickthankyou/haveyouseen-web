@@ -615,13 +615,13 @@ export type Query = {
   missingPeople: Array<MissingPerson>
   missingPerson: MissingPerson
   officer: Officer
-  officerMe: Officer
+  officerMe?: Maybe<Officer>
   officers: Array<Officer>
   report: Report
   reports: Array<Report>
   searchCases: Array<Report>
   witness: Witness
-  witnessMe: Witness
+  witnessMe?: Maybe<Witness>
   witnesses: Array<Witness>
 }
 
@@ -1073,6 +1073,7 @@ export type CaseQuery = {
       time?: any | null
       id: number
       type: ReportType
+      audio?: string | null
       description: string
       approvedReport?: {
         __typename?: 'ApprovedReport'
@@ -1101,26 +1102,26 @@ export type OfficerMeQueryVariables = Exact<{ [key: string]: never }>
 
 export type OfficerMeQuery = {
   __typename?: 'Query'
-  officerMe: {
+  officerMe?: {
     __typename?: 'Officer'
     uid: string
     createdAt: any
     name?: string | null
     updatedAt: any
-  }
+  } | null
 }
 
 export type WitnessMeQueryVariables = Exact<{ [key: string]: never }>
 
 export type WitnessMeQuery = {
   __typename?: 'Query'
-  witnessMe: {
+  witnessMe?: {
     __typename?: 'Witness'
     uid: string
     createdAt: any
     name?: string | null
     updatedAt: any
-  }
+  } | null
 }
 
 export type CreateOfficerMutationVariables = Exact<{
@@ -1406,6 +1407,7 @@ export const CaseDocument = /*#__PURE__*/ gql`
         time
         id
         type
+        audio
         approvedReport {
           id
           description

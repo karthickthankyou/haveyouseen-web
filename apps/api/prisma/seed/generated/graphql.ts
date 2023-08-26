@@ -614,13 +614,13 @@ export type Query = {
   missingPeople: Array<MissingPerson>
   missingPerson: MissingPerson
   officer: Officer
-  officerMe: Officer
+  officerMe?: Maybe<Officer>
   officers: Array<Officer>
   report: Report
   reports: Array<Report>
   searchCases: Array<Report>
   witness: Witness
-  witnessMe: Witness
+  witnessMe?: Maybe<Witness>
   witnesses: Array<Witness>
 }
 

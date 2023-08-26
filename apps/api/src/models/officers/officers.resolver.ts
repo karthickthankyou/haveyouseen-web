@@ -42,7 +42,7 @@ export class OfficersResolver {
   }
 
   @AllowAuthenticated()
-  @Query(() => Officer, { name: 'officerMe' })
+  @Query(() => Officer, { name: 'officerMe', nullable: true })
   officerMe(@Args() args: FindUniqueOfficerArgs, @GetUser() user: GetUserType) {
     return this.officersService.findOne({ ...args, where: { uid: user.uid } })
   }

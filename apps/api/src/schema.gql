@@ -152,7 +152,7 @@ type RefreshTokenOutput {
 type Query {
   witnesses(where: WitnessWhereInput, orderBy: [WitnessOrderByWithRelationInput!], cursor: WitnessWhereUniqueInput, take: Int, skip: Int, distinct: [WitnessScalarFieldEnum!]): [Witness!]!
   witness(where: WitnessWhereUniqueInput): Witness!
-  witnessMe(where: WitnessWhereUniqueInput): Witness!
+  witnessMe(where: WitnessWhereUniqueInput): Witness
   approvedReports(where: ApprovedReportWhereInput, orderBy: [ApprovedReportOrderByWithRelationInput!], cursor: ApprovedReportWhereUniqueInput, take: Int, skip: Int, distinct: [ApprovedReportScalarFieldEnum!]): [ApprovedReport!]!
   approvedReport(where: ApprovedReportWhereUniqueInput): ApprovedReport!
   cases(where: CaseWhereInput, orderBy: [CaseOrderByWithRelationInput!], cursor: CaseWhereUniqueInput, take: Int, skip: Int, distinct: [CaseScalarFieldEnum!]): [Case!]!
@@ -164,7 +164,7 @@ type Query {
   missingPerson(where: MissingPersonWhereUniqueInput): MissingPerson!
   officers(where: OfficerWhereInput, orderBy: [OfficerOrderByWithRelationInput!], cursor: OfficerWhereUniqueInput, take: Int, skip: Int, distinct: [OfficerScalarFieldEnum!]): [Officer!]!
   officer(where: OfficerWhereUniqueInput): Officer!
-  officerMe(where: OfficerWhereUniqueInput): Officer!
+  officerMe(where: OfficerWhereUniqueInput): Officer
   reports(where: ReportWhereInput, orderBy: [ReportOrderByWithRelationInput!], cursor: ReportWhereUniqueInput, take: Int, skip: Int, distinct: [ReportScalarFieldEnum!]): [Report!]!
   report(where: ReportWhereUniqueInput): Report!
 }

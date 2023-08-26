@@ -49,6 +49,7 @@ query case($where: CaseWhereUniqueInput!) {
       time
       id
       type
+      audio
       approvedReport {
         id
         description

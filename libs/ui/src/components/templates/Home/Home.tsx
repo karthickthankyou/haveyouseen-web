@@ -63,8 +63,7 @@ export const HomePage = ({}: IHomePageProps) => {
 
   const router = useRouter()
   const caseId = useMemo(() => router.query.caseId, [router.query.caseId])
-  const lat = useMemo(() => router.query.lat, [router.query.lat])
-  const lng = useMemo(() => router.query.lng, [router.query.lng])
+
   function handleMapChange(target: ViewStateChangeEvent['target']) {
     const bounds = target.getBounds()
     setBounds(bounds)
@@ -72,7 +71,6 @@ export const HomePage = ({}: IHomePageProps) => {
   return (
     <div>
       <Map
-        initialViewState={{ latitude: +(lat || 0), longitude: +(lng || 0) }}
         onDragEnd={(e) => handleMapChange(e.target)}
         onZoomEnd={(e) => handleMapChange(e.target)}
         onLoad={(e) => handleMapChange(e.target)}
@@ -129,8 +127,7 @@ export const SidebarInfo = ({
 }
 
 export const DisplayOneCase = ({ caseId }: { caseId?: number }) => {
-  const { current: thisMap } = useMap()
-
+  const { current: map } = useMap()
   const [getCase, { data, loading }] = useCaseLazyQuery()
   useEffect(() => {
     if (caseId) getCase({ variables: { where: { id: caseId } } })
@@ -147,6 +144,16 @@ export const DisplayOneCase = ({ caseId }: { caseId?: number }) => {
       })
     }
   }, [data?.case?.reports])
+
+  useEffect(() => {
+    if (!data?.case) {
+      return
+    }
+    const location = data?.case.reports[data?.case.reports?.length - 1].location
+    const lat = location?.latitude || 0
+    const lng = location?.longitude || 0
+    map?.flyTo({ center: { lat, lng }, zoom: 5, essential: true })
+  }, [data?.case])
 
   const router = useRouter()
 
@@ -207,7 +214,7 @@ export const DisplayOneCase = ({ caseId }: { caseId?: number }) => {
           lastSeen={Boolean(i + 1 === sortedReports.length)}
         />
       ))}
-      {/* <ManageUnapprovedReports /> */}
+      <ManageUnapprovedReports />
       {loading ? (
         <Panel position="center-bottom">
           <IconRefresh className="animate-spin-reverse" />
@@ -381,8 +388,17 @@ export const MarkerWithPopupCase = ({
         >
           <PopupContent onClose={() => setShowPopup(false)}>
             <div className="p-2 space-y-1">
-              <KeyValue title="Status">{report?.description || '-'}</KeyValue>
-              <KeyValue title="Status">{report?.time || '-'}</KeyValue>
+              <div>
+                <div>{format(new Date(report?.time), 'p') || '-'}</div>
+                <div className="text-lg">
+                  {format(new Date(report?.time), 'PP') || '-'}
+                </div>
+              </div>
+              <div>{report?.description || '-'}</div>
+              <div>{report?.type || '-'}</div>
+              <div>
+                {report.audio ? <audio src={report.audio} controls /> : null}
+              </div>
             </div>
           </PopupContent>
         </Popup>
@@ -468,7 +484,7 @@ export const MarkerWithPopup = ({
                   })
                 }
               >
-                Case view
+                Detailed view
               </Button>
             </div>
           </PopupContent>

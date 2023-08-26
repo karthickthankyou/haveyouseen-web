@@ -8,34 +8,46 @@ import { UpdateCaseInput } from './dto/update-case.input'
 export class CasesService {
   constructor(private readonly prisma: PrismaService) {}
   async create({ missingPerson, reports, ...args }: CreateCaseInput) {
-    const createdMissingPerson = await this.prisma.missingPerson.create({
-      data: missingPerson,
-    })
-    const createdCase = await this.prisma.case.create({
-      data: {
-        ...args,
-        missingPerson: { connect: { id: createdMissingPerson.id } },
-      },
-    })
+    try {
+      const createdMissingPerson = await this.prisma.missingPerson.create({
+        data: missingPerson,
+      })
+      const createdCase = await this.prisma.case.create({
+        data: {
+          ...args,
+          missingPerson: { connect: { id: createdMissingPerson.id } },
+        },
+      })
 
-    await Promise.all(
-      reports.map(({ location, locationId, witnessId, ...report }) => {
-        this.prisma.report.create({
-          data: {
-            ...report,
-            case: { connect: { id: createdCase.id } },
-            location: { create: location },
-            witness: {
-              connect: {
-                uid: witnessId,
+      const newReports = await Promise.all(
+        reports.map(({ location, locationId, witnessId, ...report }) =>
+          this.prisma.report.create({
+            data: {
+              ...report,
+              case: { connect: { id: createdCase.id } },
+              location: { create: location },
+              witness: {
+                connect: {
+                  uid: witnessId,
+                },
+              },
+              approvedReport: {
+                create: {
+                  officerId: witnessId,
+                  description: report.description,
+                },
               },
             },
-          },
-        })
-      }),
-    )
+          }),
+        ),
+      )
 
-    return createdCase
+      console.log('newReports ', newReports)
+
+      return createdCase
+    } catch (err) {
+      console.log('err', err)
+    }
   }
 
   findAll(args: FindManyCaseArgs) {

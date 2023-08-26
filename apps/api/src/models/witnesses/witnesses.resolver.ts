@@ -42,7 +42,7 @@ export class WitnessesResolver {
   }
 
   @AllowAuthenticated()
-  @Query(() => Witness, { name: 'witnessMe' })
+  @Query(() => Witness, { name: 'witnessMe', nullable: true })
   witnessMe(@Args() args: FindUniqueWitnessArgs, @GetUser() user: GetUserType) {
     return this.witnessesService.findOne({ where: { uid: user.uid } })
   }

@@ -11,9 +11,11 @@ import { useAppSelector } from '@haveyouseen-org/store'
 import { selectUid } from '@haveyouseen-org/store/user'
 
 import { useAsync } from '@haveyouseen-org/hooks/src/fetcher'
-import { login } from '@haveyouseen-org/network/src/auth'
+import { googleSignIn, login } from '@haveyouseen-org/network/src/auth'
 import { notification$ } from '@haveyouseen-org/util/subjects'
 import { useRouter } from 'next/router'
+import { PlainButton } from '../../atoms/PlainButton'
+import { IconBrandGoogle } from '@tabler/icons-react'
 
 export interface ILoginFormProps {
   className?: string
@@ -82,6 +84,14 @@ const LoginForm = ({ className }: ILoginFormProps) => {
           Create one
         </Link>{' '}
         now.
+      </div>
+      <div className="flex justify-center gap-2 mt-6">
+        <PlainButton
+          className="p-1 transition-all border-2 border-black rounded-full shadow-lg hover:shadow-xl"
+          onClick={googleSignIn}
+        >
+          <IconBrandGoogle />
+        </PlainButton>
       </div>
     </Form>
   )

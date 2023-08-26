@@ -9,6 +9,7 @@ import { ReduxProvider } from '@haveyouseen-org/store/Provider'
 import { ApolloProvider } from '@haveyouseen-org/network/src/config/apollo'
 import { AppLevelListeners } from '@haveyouseen-org/ui/src/components/atoms/AppLevelListeners'
 import { Notifications } from '@haveyouseen-org/ui/src/components/organisms/Notifications'
+import { useInitialiseUser } from '@haveyouseen-org/hooks/src/user'
 
 const MENUITEMS: MenuItem[] = [
   { label: 'New Case', href: '/add-new-case', loggedIn: true },
@@ -25,7 +26,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <ReduxProvider>
       <ApolloProvider>
-        <AppLevelListeners />
+        <AppLevelListeners role="officer" />
 
         <Header
           type="officer"

@@ -51,7 +51,7 @@ import { selectUid } from '@haveyouseen-org/store/user'
 export interface IAddNewCaseProps {}
 
 export const AddNewCase = ({}: IAddNewCaseProps) => {
-  const { handleSubmit } = useFormContext<FormTypeAddNewCase>()
+  const { handleSubmit, reset } = useFormContext<FormTypeAddNewCase>()
 
   const { displayName, images } = useWatch<FormTypeAddNewCase>()
   useSetHeaderText(displayName)
@@ -66,6 +66,7 @@ export const AddNewCase = ({}: IAddNewCaseProps) => {
         message: 'Case created successfully.',
         type: 'success',
       })
+      reset()
       router.push('/')
     }
 
@@ -81,8 +82,8 @@ export const AddNewCase = ({}: IAddNewCaseProps) => {
   return (
     <div>
       <Form
-        onSubmit={handleSubmit(async (data) => {
-          const {
+        onSubmit={handleSubmit(
+          async ({
             description,
             displayName,
             dob,
@@ -93,62 +94,63 @@ export const AddNewCase = ({}: IAddNewCaseProps) => {
             status,
             weight,
             contact,
-          } = data
-          const uploadedImages = await uploadImages(data.images)
+          }) => {
+            const uploadedImages = await uploadImages(images)
 
-          const uploadedReportImagesPromises = reports.map((report) =>
-            uploadImages(report.images),
-          )
-          const uploadedReportImages = await Promise.all(
-            uploadedReportImagesPromises,
-          )
+            const uploadedReportImagesPromises = reports.map((report) =>
+              uploadImages(report.images),
+            )
+            const uploadedReportImages = await Promise.all(
+              uploadedReportImagesPromises,
+            )
 
-          createCaseMutation({
-            variables: {
-              createCaseInput: {
-                reports: reports.map(
-                  (
-                    {
-                      audio,
+            await createCaseMutation({
+              variables: {
+                createCaseInput: {
+                  reports: reports.map(
+                    (
+                      {
+                        audio,
+                        description,
+                        lat,
+                        lng,
+                        localId,
+                        time,
+                        type,
+                        address,
+                        images,
+                      },
+                      index,
+                    ) => ({
                       description,
-                      lat,
-                      lng,
-                      localId,
-                      time,
                       type,
-                      address,
-                      images,
-                    },
-                    index,
-                  ) => ({
+                      audio,
+                      location: {
+                        latitude: lat || 0,
+                        longitude: lng || 0,
+                        address: address || '',
+                      },
+                      time,
+                      witnessId: uid,
+                      images: uploadedReportImages[index],
+                    }),
+                  ),
+                  missingPerson: {
                     description,
-                    type,
-                    audio,
-                    location: {
-                      latitude: lat || 0,
-                      longitude: lng || 0,
-                      address: address || '',
-                    },
-                    time,
-                    witnessId: uid,
-                    images: uploadedReportImages[index],
-                  }),
-                ),
-                missingPerson: {
-                  description,
-                  displayName,
-                  dob,
-                  gender,
-                  height,
-                  images: uploadedImages,
-                  weight,
+                    displayName,
+                    dob,
+                    gender,
+                    height,
+                    images: uploadedImages,
+                    weight,
+                  },
+                  status,
+                  contact: contact.map((c) => c.number),
                 },
-                status,
-                contact: contact.map((c) => c.number),
               },
-            },
-          })
-        })}
+            })
+          },
+        )}
         className="relative grid gap-2 md:grid-cols-2"
       >
         <div className="flex flex-col gap-4 p-3 overflow-y-auto bg-white">

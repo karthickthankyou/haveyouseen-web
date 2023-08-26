@@ -96,7 +96,7 @@ export const AddReports = () => {
     >
       {fields.length === 0 ? (
         <div className="flex items-center justify-center h-20">
-          No reports added.
+          You have not added any reports.
         </div>
       ) : null}
       {fields.map((field, index) => (

@@ -1,16 +1,18 @@
 import { auth } from '@haveyouseen-org/network/src/config/firebase'
-import { useRouter } from 'next/router'
 
 import { useAppDispatch, useAppSelector } from '@haveyouseen-org/store'
-import { selectUid, resetUser, setUser } from '@haveyouseen-org/store/user'
+import { resetUser, setUser, selectUser } from '@haveyouseen-org/store/user'
 
 import { onAuthStateChanged } from 'firebase/auth'
 import { useEffect } from 'react'
 import {
   useCreateOfficerMutation,
   useCreateWitnessMutation,
+  useOfficerMeLazyQuery,
+  useWitnessMeLazyQuery,
 } from '@haveyouseen-org/network/src/generated'
 import { Role } from '@haveyouseen-org/types'
+import { notification$ } from '@haveyouseen-org/util/subjects'
 
 export const useUserListener = () => {
   //   useRefreshToken()
@@ -43,50 +45,74 @@ export const useUserListener = () => {
   )
 }
 
-export const useCreateUser = () => {
-  const [createWitness, { loading: witnessLoading }] =
-    useCreateWitnessMutation()
-  const [createOfficer, { loading: officerLoading }] =
-    useCreateOfficerMutation()
+export const useInitialiseUser = ({ role }: { role?: Role }) => {
+  const { uid, displayName } = useAppSelector(selectUser)
+  const [
+    getOfficerMe,
+    { data: officerData, loading: officerLoading, called: officerCalled },
+  ] = useOfficerMeLazyQuery()
+  const [
+    getWitnessMe,
+    { data: witnessData, loading: witnessLoading, called: witnessCalled },
+  ] = useWitnessMeLazyQuery()
 
-  const createUser = async ({
-    uid,
-    displayName,
-    role,
-  }: {
-    uid?: string
-    displayName?: string | null
-    role?: Role
-  }) => {
-    console.log('uid, displayName, role ', uid, displayName, role)
+  const [createWitness] = useCreateWitnessMutation()
+  const [createOfficer] = useCreateOfficerMutation()
+
+  useEffect(() => {
+    if (uid) {
+      getWitnessMe()
+      getOfficerMe()
+    }
+  }, [uid, getWitnessMe, getOfficerMe])
+
+  useEffect(() => {
     try {
-      if (role === 'witness' && uid) {
-        await createWitness({
-          variables: {
-            createWitnessInput: {
-              name: displayName,
-              uid,
-            },
-          },
-        })
+      if (role === 'officer') {
+        if (
+          uid &&
+          !officerData?.officerMe &&
+          officerCalled &&
+          !officerLoading
+        ) {
+          notification$.next({ message: 'Creating officer...' })
+          ;(async () => {
+            await createOfficer({
+              variables: {
+                createOfficerInput: {
+                  name: displayName,
+                  uid,
+                },
+              },
+            })
+          })()
+          notification$.next({ message: 'Officer created.' })
+        }
       }
-      if (role === 'officer' && uid) {
-        await createOfficer({
-          variables: {
-            createOfficerInput: {
-              name: displayName,
-              uid,
-            },
-          },
-        })
+
+      if (role === 'witness') {
+        if (
+          uid &&
+          !witnessData?.witnessMe &&
+          witnessCalled &&
+          !witnessLoading
+        ) {
+          notification$.next({ message: 'Creating witness...' })
+          ;(async () => {
+            await createWitness({
+              variables: {
+                createWitnessInput: {
+                  name: displayName,
+                  uid,
+                },
+              },
+            })
+          })()
+          notification$.next({ message: 'Witness created.' })
+        }
       }
     } catch (error) {
-      console.error('Error creating user:', error)
+      notification$.next({ message: `Failed to create user.` })
     }
-  }
-
-  return {
-    createUser,
-    loading: witnessLoading || officerLoading,
-  }
+  }, [uid, role, officerData, witnessData, notification$])
 }

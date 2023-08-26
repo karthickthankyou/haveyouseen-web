@@ -33,7 +33,6 @@ const MyTimelineItem = ({ children, type }: TimelineStepType) => {
   return (
     <TimelineItem
       classes={{ missingOppositeContent: 'before:hidden', root: 'p-0' }}
-      className="p-0"
     >
       <TimelineSeparator>
         <IconType type={type} />

@@ -52,9 +52,17 @@ export const ReportsTimeline = ({ reports }: IReportsTimelineProps) => {
                   </div>
                 </div>
 
-                <div className="flex justify-between gap-2">
+                <div className="flex flex-col gap-2">
                   {report.approvedReport?.id ? (
-                    <div>{report.approvedReport?.description}</div>
+                    <>
+                      <div>{report.description}</div>
+                      <div>
+                        {report.audio ? (
+                          <audio src={report.audio} controls />
+                        ) : null}
+                      </div>
+                      <div>{report.approvedReport?.description}</div>
+                    </>
                   ) : (
                     <div>
                       <div>{report.description}</div>
@@ -62,7 +70,8 @@ export const ReportsTimeline = ({ reports }: IReportsTimelineProps) => {
                     </div>
                   )}
                   {report.location?.latitude ? (
-                    <Button
+                    <PlainButton
+                      className="flex items-center gap-2"
                       onClick={() => {
                         map?.flyTo({
                           center: [
@@ -72,11 +81,9 @@ export const ReportsTimeline = ({ reports }: IReportsTimelineProps) => {
                           essential: true,
                         })
                       }}
-                      variant="text"
-                      size="none"
                     >
-                      <IconPin />
-                    </Button>
+                      <IconPin /> Location
+                    </PlainButton>
                   ) : null}
                 </div>
               </TimelineItem>

@@ -40,7 +40,7 @@ export class CasesResolver {
     if (!witness?.uid) {
       await this.prisma.witness.create({ data: { uid: user.uid } })
     }
-    console.log('witness', witness)
+
     return this.casesService.create(args)
   }
 
