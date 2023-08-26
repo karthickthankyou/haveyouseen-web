@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-export type Role = 'admin' | 'officer'
+export type Role = 'admin' | 'officer' | 'witness'
 
 export type MenuItem = { label: string; href: string; loggedIn: boolean }
 export type GetUserType = {
@@ -22,6 +22,7 @@ export type NotificationType = {
     | 'bottom-right'
     | 'bottom-left'
     | 'bottom-center'
+  duration?: number
 }
 
 export type LatLng = {

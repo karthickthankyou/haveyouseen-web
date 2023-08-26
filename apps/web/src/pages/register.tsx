@@ -13,7 +13,7 @@ export default function Login() {
       </Head>
       <main>
         <AuthLayout title="Register">
-          <RegisterForm />
+          <RegisterForm role="witness" />
         </AuthLayout>
       </main>
     </>

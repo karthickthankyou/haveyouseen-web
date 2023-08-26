@@ -14,8 +14,11 @@ import {
   delay,
   catchError,
   EMPTY,
+  timer,
 } from 'rxjs'
 import { useAppDispatch } from '@haveyouseen-org/store'
+import { delayWhen } from 'rxjs/operators'
+
 import {} from '@haveyouseen-org/store/utils'
 
 export const useNotification = () => {
@@ -29,7 +32,7 @@ export const useNotification = () => {
         tap((v) => {
           dispatch(addNotification(v))
         }),
-        delay(4000),
+        delayWhen((v) => timer(v.duration || 4000)),
         tap((v) => {
           dispatch(removeNotification(v.id))
         }),

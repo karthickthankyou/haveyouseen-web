@@ -3,9 +3,10 @@ import Image from 'next/image'
 import { GradientText } from '../../molecules/GradientText'
 import { useAppSelector } from '@haveyouseen-org/store'
 import { selectVictimName, selectVictimPic } from '@haveyouseen-org/store/utils'
+import { Role } from '@haveyouseen-org/types'
 
 export interface IBrandProps {
-  type?: 'admin' | 'officer'
+  type?: Role
 }
 
 export const Brand = ({ type }: IBrandProps) => {

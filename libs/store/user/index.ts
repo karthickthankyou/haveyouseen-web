@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '..'
+import { Role } from '@haveyouseen-org/types'
 
-export type Role = 'admin' | 'agent'
 export type UserSliceType = {
   uid?: string
   displayName?: string
