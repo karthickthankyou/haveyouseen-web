@@ -34,14 +34,16 @@ export const MissingPersonInfo = ({
 
       <div className="grid grid-cols-2 gap-1">
         <KeyValue title="Height">{missingPerson.height}</KeyValue>
-        <KeyValue title="Weigth">{missingPerson.weight}</KeyValue>
+        <KeyValue title="Weight">{missingPerson.weight}</KeyValue>
       </div>
       <div className="grid grid-cols-2 gap-1">
-        <KeyValue title="Missing since">
-          {formatDistanceToNow(new Date(missingPerson.missingSince), {
-            addSuffix: true,
-          })}
-        </KeyValue>
+        {missingPerson.missingSince ? (
+          <KeyValue title="Missing since">
+            {formatDistanceToNow(new Date(missingPerson.missingSince), {
+              addSuffix: true,
+            })}
+          </KeyValue>
+        ) : null}
       </div>
       <div className="pt-6" />
     </div>

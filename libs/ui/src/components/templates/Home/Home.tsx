@@ -81,7 +81,9 @@ export const HomePage = ({}: IHomePageProps) => {
           <SearchPlaceBox />
         </Panel>
         <Panel position="right-top">
-          <CurrentLocationButton />
+          <CurrentLocationButton
+            moveToUserLocationOnLoad={Boolean(router.isReady && !caseId)}
+          />
         </Panel>
         <Panel position="right-center">
           <DefaultZoomControls />

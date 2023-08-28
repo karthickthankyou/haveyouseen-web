@@ -3,7 +3,11 @@ import { useMap } from 'react-map-gl'
 import { Button } from '../../atoms/Button'
 import { useEffect, useState } from 'react'
 
-export const CurrentLocationButton = () => {
+export const CurrentLocationButton = ({
+  moveToUserLocationOnLoad,
+}: {
+  moveToUserLocationOnLoad?: boolean
+}) => {
   const { current: map } = useMap()
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -27,7 +31,9 @@ export const CurrentLocationButton = () => {
   }
 
   useEffect(() => {
-    fetchAndSetLocation()
+    if (moveToUserLocationOnLoad) {
+      fetchAndSetLocation()
+    }
   }, [])
 
   return (
