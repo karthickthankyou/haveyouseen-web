@@ -25,4 +25,6 @@ export class CreateReportInputWithoutCaseId extends OmitType(
 ) {
   @Field(() => CreateLocationInput)
   location: CreateLocationInput
+  showPublic?: boolean
+  officerDescription?: string
 }

@@ -11,7 +11,7 @@ const deleteAll = async () => {
 
   //   Users
 
-  //   await prisma.officer.deleteMany()
+  await prisma.officer.deleteMany()
   await prisma.witness.deleteMany()
 }
 

@@ -20,25 +20,37 @@ export class CasesService {
       })
 
       const newReports = await Promise.all(
-        reports.map(({ location, locationId, witnessId, ...report }) =>
-          this.prisma.report.create({
-            data: {
-              ...report,
-              case: { connect: { id: createdCase.id } },
-              location: { create: location },
-              witness: {
-                connect: {
-                  uid: witnessId,
+        reports.map(
+          ({
+            location,
+            locationId,
+            showPublic,
+            officerDescription,
+            witnessId,
+            ...report
+          }) =>
+            this.prisma.report.create({
+              data: {
+                ...report,
+                case: { connect: { id: createdCase.id } },
+                location: { create: location },
+                witness: {
+                  connect: {
+                    uid: witnessId,
+                  },
                 },
+                ...(showPublic
+                  ? {
+                      approvedReport: {
+                        create: {
+                          officerId: witnessId,
+                          description: officerDescription,
+                        },
+                      },
+                    }
+                  : {}),
               },
-              approvedReport: {
-                create: {
-                  officerId: witnessId,
-                  description: report.description,
-                },
-              },
-            },
-          }),
+            }),
         ),
       )
 

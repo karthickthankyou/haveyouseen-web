@@ -703,6 +703,8 @@ input CreateReportInputWithoutCaseId {
   images: [String!]!
   description: String!
   location: CreateLocationInput!
+  showPublic: Boolean
+  officerDescription: String
 }
 
 input CreateLocationInput {

@@ -200,6 +200,8 @@ export type CreateReportInputWithoutCaseId = {
   images: Array<Scalars['String']>
   location: CreateLocationInput
   locationId?: InputMaybe<Scalars['Int']>
+  officerDescription?: InputMaybe<Scalars['String']>
+  showPublic?: InputMaybe<Scalars['Boolean']>
   time?: InputMaybe<Scalars['DateTime']>
   type: ReportType
   witnessId?: InputMaybe<Scalars['String']>

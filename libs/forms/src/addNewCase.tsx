@@ -18,6 +18,8 @@ export const newReportFormSchema = z.object({
   type: z.nativeEnum(ReportType),
   audio: z.string().nullable(),
   images: z.any().optional(),
+  showPublic: z.boolean().optional(),
+  officerDescription: z.string().optional(),
 })
 
 export const contactSchema = z.object({

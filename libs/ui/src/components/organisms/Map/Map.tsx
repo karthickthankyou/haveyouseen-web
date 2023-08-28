@@ -20,6 +20,7 @@ export const Map = ({ height = 'calc(100vh - 4rem)', ...props }: IMapProps) => {
       style={{ height }}
       pitch={22.5}
       scrollZoom={false}
+      doubleClickZoom={false}
     >
       <StyleMap />
       {props.children}

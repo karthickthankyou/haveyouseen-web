@@ -389,33 +389,36 @@ export const MarkerWithPopupCase = ({
 
   return (
     <div>
-      {showPopup ? (
-        <Popup
-          latitude={report?.location?.latitude || 0}
-          longitude={report?.location?.longitude || 0}
-          onOpen={() => console.log('Opened')}
-          closeOnClick={false}
-          anchor="bottom"
-          offset={24}
-          closeButton={false}
-        >
-          <PopupContent onClose={() => setShowPopup(false)}>
-            <div className="p-2 space-y-1">
-              <div>
-                <div>{format(new Date(report?.time), 'p') || '-'}</div>
-                <div className="text-lg">
-                  {format(new Date(report?.time), 'PP') || '-'}
+      <AnimatePresence>
+        {showPopup ? (
+          <Popup
+            key={report.id}
+            latitude={report?.location?.latitude || 0}
+            longitude={report?.location?.longitude || 0}
+            onOpen={() => console.log('Opened')}
+            closeOnClick={false}
+            anchor="bottom"
+            offset={24}
+            closeButton={false}
+          >
+            <PopupContent onClose={() => setShowPopup(false)}>
+              <div className="p-2 space-y-1">
+                <div>
+                  <div>{format(new Date(report?.time), 'p') || '-'}</div>
+                  <div className="text-lg">
+                    {format(new Date(report?.time), 'PP') || '-'}
+                  </div>
+                </div>
+                <div>{report?.description || '-'}</div>
+                <div>{report?.type || '-'}</div>
+                <div>
+                  {report.audio ? <audio src={report.audio} controls /> : null}
                 </div>
               </div>
-              <div>{report?.description || '-'}</div>
-              <div>{report?.type || '-'}</div>
-              <div>
-                {report.audio ? <audio src={report.audio} controls /> : null}
-              </div>
-            </div>
-          </PopupContent>
-        </Popup>
-      ) : null}
+            </PopupContent>
+          </Popup>
+        ) : null}
+      </AnimatePresence>
 
       <Marker
         anchor="bottom"
@@ -539,24 +542,17 @@ export const PopupContent = ({
   children: ReactNode
 }) => {
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, transform: 'translateY(50%)' }}
-        animate={{ opacity: 1, transform: 'translateY(0px)' }}
-        exit={{ opacity: 0, transform: 'translateY(50%)' }}
-        className="grid grid-cols-1 grid-rows-1 "
-      >
-        <div className="col-start-1 row-start-1 ">{children}</div>
-        <div className="flex justify-end col-start-1 row-start-1 p-0 items-top">
-          <button
-            type="button"
-            className="absolute top-0 right-0 p-0.5 rounded-bl bg-black/30 hover:bg-black/40"
-            onClick={onClose}
-          >
-            <IconX className="w-5 h-5 text-white" />
-          </button>
-        </div>
-      </motion.div>
-    </AnimatePresence>
+    <div className="grid grid-cols-1 grid-rows-1 ">
+      <div className="col-start-1 row-start-1 ">{children}</div>
+      <div className="flex justify-end col-start-1 row-start-1 p-0 items-top">
+        <button
+          type="button"
+          className="absolute top-0 right-0 p-0.5 rounded-bl bg-black/30 hover:bg-black/40"
+          onClick={onClose}
+        >
+          <IconX className="w-5 h-5 text-white" />
+        </button>
+      </div>
+    </div>
   )
 }
