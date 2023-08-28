@@ -9,6 +9,7 @@ import {
 } from 'src/common/dtos/common.input'
 import { ApprovedReportRelationFilter } from 'src/models/approved-reports/dto/where.args'
 import { CaseRelationFilter } from 'src/models/cases/dto/where.args'
+import { CommentListRelationFilter } from 'src/models/comments/dtos/where.args'
 import { LocationRelationFilter } from 'src/models/locations/dto/where.args'
 import { WitnessRelationFilter } from 'src/models/witnesses/dto/where.args'
 
@@ -34,6 +35,8 @@ export class EnumReportTypeFilter {
 export class ReportWhereInput
   implements RestrictProperties<ReportWhereInput, Prisma.ReportWhereInput>
 {
+  @Field(() => CommentListRelationFilter, { nullable: true })
+  comments: CommentListRelationFilter
   @Field(() => StringListFilter, { nullable: true })
   images: StringListFilter
   @Field(() => IntFilter, { nullable: true })

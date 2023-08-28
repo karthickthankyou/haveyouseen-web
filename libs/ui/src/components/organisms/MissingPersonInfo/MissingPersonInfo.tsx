@@ -16,7 +16,7 @@ export const MissingPersonInfo = ({
       <Image
         alt={missingPerson.displayName}
         fill
-        className="relative object-cover w-full h-full aspect-square"
+        className="relative object-cover w-full h-full max-w-sm aspect-square"
         src={missingPerson?.images ? missingPerson?.images[0] : ''}
       />
       <KeyValue title="Name">{missingPerson.displayName}</KeyValue>
@@ -33,8 +33,8 @@ export const MissingPersonInfo = ({
       </div>
 
       <div className="grid grid-cols-2 gap-1">
-        <KeyValue title="Height">{missingPerson.height}</KeyValue>
-        <KeyValue title="Weight">{missingPerson.weight}</KeyValue>
+        <KeyValue title="Height">{missingPerson.height} cm</KeyValue>
+        <KeyValue title="Weight">{missingPerson.weight} kg</KeyValue>
       </div>
       <div className="grid grid-cols-2 gap-1">
         {missingPerson.missingSince ? (

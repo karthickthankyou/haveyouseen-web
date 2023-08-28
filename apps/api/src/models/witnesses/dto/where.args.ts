@@ -5,6 +5,7 @@ import {
   RestrictProperties,
   StringFilter,
 } from 'src/common/dtos/common.input'
+import { CommentListRelationFilter } from 'src/models/comments/dtos/where.args'
 import { ReportListRelationFilter } from 'src/models/reports/dto/where.args'
 
 @InputType()
@@ -17,6 +18,8 @@ export class WitnessWhereUniqueInput {
 export class WitnessWhereInput
   implements RestrictProperties<WitnessWhereInput, Prisma.WitnessWhereInput>
 {
+  @Field(() => CommentListRelationFilter, { nullable: true })
+  comments: CommentListRelationFilter
   @Field(() => DateTimeFilter, { nullable: true })
   createdAt: DateTimeFilter
   @Field(() => DateTimeFilter, { nullable: true })

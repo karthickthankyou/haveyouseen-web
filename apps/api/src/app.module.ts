@@ -15,6 +15,7 @@ import { ReportsModule } from './models/reports/reports.module'
 import { PrismaModule } from './common/prisma/prisma.module'
 import { FirebaseModule } from './common/firebase/firebase.module'
 import { AuthModule } from './common/auth/auth.module'
+import { CommentsModule } from './models/comments/comments.module'
 
 @Module({
   imports: [
@@ -40,6 +41,8 @@ import { AuthModule } from './common/auth/auth.module'
     MissingPeopleModule,
     OfficersModule,
     ReportsModule,
+
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -77,13 +77,13 @@ export const HomePage = ({}: IHomePageProps) => {
         onZoomEnd={(e) => handleMapChange(e.target)}
         onLoad={(e) => handleMapChange(e.target)}
       >
-        <Panel position="left-top">
-          <SearchPlaceBox />
-        </Panel>
         <Panel position="right-top">
-          <CurrentLocationButton
-            moveToUserLocationOnLoad={Boolean(router.isReady && !caseId)}
-          />
+          <div className="flex">
+            <CurrentLocationButton
+              moveToUserLocationOnLoad={Boolean(router.isReady && !caseId)}
+            />
+            <SearchPlaceBox />
+          </div>
         </Panel>
         <Panel position="right-center">
           <DefaultZoomControls />
@@ -111,10 +111,10 @@ export const SidebarInfo = ({
 
   if (!caseInfo?.missingPerson) return null
   return (
-    <div className="w-full max-w-md px-2 bg-white shadow-lg">
+    <div className="w-full max-w-md px-2 bg-white shadow-lg ">
       <Accordion
         defaultOpen
-        titleClassName="text-lg"
+        titleClassName="text-lg px-3"
         title={caseInfo.missingPerson.displayName}
       >
         <div className="space-y-2 overflow-y-auto h-[calc(100vh-8rem)]">
@@ -201,7 +201,7 @@ export const DisplayOneCase = ({ caseId }: { caseId?: number }) => {
 
   return (
     <FormProvider {...methods}>
-      <Panel position="left-top" className="max-w-sm">
+      <Panel position="left-top">
         <SidebarInfo caseInfo={data?.case} reports={sortedReports} />
 
         <div className="flex gap-2">

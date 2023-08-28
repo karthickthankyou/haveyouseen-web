@@ -24,6 +24,7 @@ import { ApprovedReport } from '../approved-reports/entities/approved-report.ent
 import { Witness } from '../witnesses/entities/witness.entity'
 import { Case } from '../cases/entities/case.entity'
 import { GetUserType } from 'src/common/types'
+import { Comment } from '../comments/entity/comment.entity'
 
 @Resolver(() => Report)
 export class ReportsResolver {
@@ -122,6 +123,14 @@ export class ReportsResolver {
   case(@Parent() parent: Report) {
     return this.prisma.case.findUnique({
       where: { id: parent.caseId },
+    })
+  }
+
+  @ResolveField(() => [Comment], { nullable: true })
+  comments(@Parent() parent: Report) {
+    return this.prisma.comment.findMany({
+      where: { reportId: parent.id },
+      orderBy: { createdAt: 'desc' },
     })
   }
 }

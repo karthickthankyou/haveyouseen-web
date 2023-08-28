@@ -31,9 +31,12 @@ type Report {
   approvedReport: ApprovedReport
   witness: Witness
   case: Case
+  comments: [Comment!]
 }
 
-"""Enum for ReportType"""
+"""
+Enum for ReportType
+"""
 enum ReportType {
   SIGHTING
   LEAD
@@ -69,7 +72,9 @@ type Case {
   missingPerson: MissingPerson!
 }
 
-"""Enum for Status"""
+"""
+Enum for Status
+"""
 enum Status {
   MISSING
   FOUND_SAFE
@@ -92,7 +97,9 @@ type MissingPerson {
   case: Case
 }
 
-"""Enum for Gender"""
+"""
+Enum for Gender
+"""
 enum Gender {
   MALE
   FEMALE
@@ -100,7 +107,9 @@ enum Gender {
   PREFER_NOT_TO_SAY
 }
 
-"""Enum for BodyType"""
+"""
+Enum for BodyType
+"""
 enum BodyType {
   SLENDER
   AVERAGE
@@ -117,6 +126,17 @@ type Location {
   createdAt: DateTime!
   updatedAt: DateTime!
   reports: [Report!]!
+}
+
+type Comment {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  content: String!
+  reportId: Int!
+  witnessUid: String!
+  report: Report
+  witness: Witness
 }
 
 type LoginOutput {
@@ -150,26 +170,88 @@ type RefreshTokenOutput {
 }
 
 type Query {
-  witnesses(where: WitnessWhereInput, orderBy: [WitnessOrderByWithRelationInput!], cursor: WitnessWhereUniqueInput, take: Int, skip: Int, distinct: [WitnessScalarFieldEnum!]): [Witness!]!
+  witnesses(
+    where: WitnessWhereInput
+    orderBy: [WitnessOrderByWithRelationInput!]
+    cursor: WitnessWhereUniqueInput
+    take: Int
+    skip: Int
+    distinct: [WitnessScalarFieldEnum!]
+  ): [Witness!]!
   witness(where: WitnessWhereUniqueInput): Witness!
   witnessMe(where: WitnessWhereUniqueInput): Witness
-  approvedReports(where: ApprovedReportWhereInput, orderBy: [ApprovedReportOrderByWithRelationInput!], cursor: ApprovedReportWhereUniqueInput, take: Int, skip: Int, distinct: [ApprovedReportScalarFieldEnum!]): [ApprovedReport!]!
+  approvedReports(
+    where: ApprovedReportWhereInput
+    orderBy: [ApprovedReportOrderByWithRelationInput!]
+    cursor: ApprovedReportWhereUniqueInput
+    take: Int
+    skip: Int
+    distinct: [ApprovedReportScalarFieldEnum!]
+  ): [ApprovedReport!]!
   approvedReport(where: ApprovedReportWhereUniqueInput): ApprovedReport!
-  cases(where: CaseWhereInput, orderBy: [CaseOrderByWithRelationInput!], cursor: CaseWhereUniqueInput, take: Int, skip: Int, distinct: [CaseScalarFieldEnum!]): [Case!]!
+  cases(
+    where: CaseWhereInput
+    orderBy: [CaseOrderByWithRelationInput!]
+    cursor: CaseWhereUniqueInput
+    take: Int
+    skip: Int
+    distinct: [CaseScalarFieldEnum!]
+  ): [Case!]!
   case(where: CaseWhereUniqueInput): Case!
-  searchCases(dateFilter: DateFilterInput, locationFilter: LocationFilterInput!): [Report!]!
-  locations(where: LocationWhereInput, orderBy: [LocationOrderByWithRelationInput!], cursor: LocationWhereUniqueInput, take: Int, skip: Int, distinct: [LocationScalarFieldEnum!]): [Location!]!
+  searchCases(
+    dateFilter: DateFilterInput
+    locationFilter: LocationFilterInput!
+  ): [Report!]!
+  locations(
+    where: LocationWhereInput
+    orderBy: [LocationOrderByWithRelationInput!]
+    cursor: LocationWhereUniqueInput
+    take: Int
+    skip: Int
+    distinct: [LocationScalarFieldEnum!]
+  ): [Location!]!
   location(where: LocationWhereUniqueInput): Location!
-  missingPeople(where: MissingPersonWhereInput, orderBy: [MissingPersonOrderByWithRelationInput!], cursor: MissingPersonWhereUniqueInput, take: Int, skip: Int, distinct: [MissingPersonScalarFieldEnum!]): [MissingPerson!]!
+  missingPeople(
+    where: MissingPersonWhereInput
+    orderBy: [MissingPersonOrderByWithRelationInput!]
+    cursor: MissingPersonWhereUniqueInput
+    take: Int
+    skip: Int
+    distinct: [MissingPersonScalarFieldEnum!]
+  ): [MissingPerson!]!
   missingPerson(where: MissingPersonWhereUniqueInput): MissingPerson!
-  officers(where: OfficerWhereInput, orderBy: [OfficerOrderByWithRelationInput!], cursor: OfficerWhereUniqueInput, take: Int, skip: Int, distinct: [OfficerScalarFieldEnum!]): [Officer!]!
+  officers(
+    where: OfficerWhereInput
+    orderBy: [OfficerOrderByWithRelationInput!]
+    cursor: OfficerWhereUniqueInput
+    take: Int
+    skip: Int
+    distinct: [OfficerScalarFieldEnum!]
+  ): [Officer!]!
   officer(where: OfficerWhereUniqueInput): Officer!
   officerMe(where: OfficerWhereUniqueInput): Officer
-  reports(where: ReportWhereInput, orderBy: [ReportOrderByWithRelationInput!], cursor: ReportWhereUniqueInput, take: Int, skip: Int, distinct: [ReportScalarFieldEnum!]): [Report!]!
+  reports(
+    where: ReportWhereInput
+    orderBy: [ReportOrderByWithRelationInput!]
+    cursor: ReportWhereUniqueInput
+    take: Int
+    skip: Int
+    distinct: [ReportScalarFieldEnum!]
+  ): [Report!]!
   report(where: ReportWhereUniqueInput): Report!
+  comments(
+    where: CommentWhereInput
+    orderBy: [CommentOrderByWithRelationInput!]
+    cursor: CommentWhereUniqueInput
+    take: Int
+    skip: Int
+    distinct: [CommentScalarFieldEnum!]
+  ): [Comment!]!
+  comment(where: CommentWhereUniqueInput): Comment!
 }
 
 input WitnessWhereInput {
+  comments: CommentListRelationFilter
   createdAt: DateTimeFilter
   updatedAt: DateTimeFilter
   uid: StringFilter
@@ -178,6 +260,34 @@ input WitnessWhereInput {
   AND: [WitnessWhereInput!]
   OR: [WitnessWhereInput!]
   NOT: [WitnessWhereInput!]
+}
+
+input CommentListRelationFilter {
+  every: CommentWhereInput
+  some: CommentWhereInput
+  none: CommentWhereInput
+}
+
+input CommentWhereInput {
+  id: IntFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  content: StringFilter
+  reportId: IntFilter
+  witnessUid: StringFilter
+  Report: ReportWhereInput
+  Witness: WitnessWhereInput
+  AND: [CommentWhereInput!]
+  OR: [CommentWhereInput!]
+  NOT: [CommentWhereInput!]
+}
+
+input IntFilter {
+  equals: Int
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
 }
 
 input DateTimeFilter {
@@ -210,13 +320,8 @@ enum QueryMode {
   insensitive
 }
 
-input ReportListRelationFilter {
-  every: ReportWhereInput
-  some: ReportWhereInput
-  none: ReportWhereInput
-}
-
 input ReportWhereInput {
+  comments: CommentListRelationFilter
   images: StringListFilter
   id: IntFilter
   createdAt: DateTimeFilter
@@ -243,14 +348,6 @@ input StringListFilter {
   hasEvery: [String!]
   hasSome: [String!]
   isEmpty: Boolean
-}
-
-input IntFilter {
-  equals: Int
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
 }
 
 input EnumReportTypeFilter {
@@ -285,6 +382,12 @@ input FloatFilter {
   gt: Float
   gte: Float
   not: Float
+}
+
+input ReportListRelationFilter {
+  every: ReportWhereInput
+  some: ReportWhereInput
+  none: ReportWhereInput
 }
 
 input CaseRelationFilter {
@@ -397,11 +500,16 @@ input WitnessRelationFilter {
 }
 
 input WitnessOrderByWithRelationInput {
+  comments: CommentOrderByRelationAggregateInput
   createdAt: SortOrder
   updatedAt: SortOrder
   uid: SortOrder
   name: SortOrder
   reports: ReportOrderByRelationAggregateInput
+}
+
+input CommentOrderByRelationAggregateInput {
+  _count: SortOrder
 }
 
 enum SortOrder {
@@ -435,6 +543,7 @@ input ApprovedReportOrderByWithRelationInput {
 }
 
 input ReportOrderByWithRelationInput {
+  comments: CommentOrderByRelationAggregateInput
   images: SortOrder
   id: SortOrder
   createdAt: SortOrder
@@ -599,6 +708,30 @@ enum ReportScalarFieldEnum {
   images
 }
 
+input CommentOrderByWithRelationInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  content: SortOrder
+  reportId: SortOrder
+  witnessUid: SortOrder
+  Report: ReportOrderByWithRelationInput
+  Witness: WitnessOrderByWithRelationInput
+}
+
+input CommentWhereUniqueInput {
+  id: Int
+}
+
+enum CommentScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  content
+  reportId
+  witnessUid
+}
+
 type Mutation {
   login(credentials: LoginInput!): LoginOutput!
   register(credentials: RegisterInput!): RegisterOutput!
@@ -609,24 +742,36 @@ type Mutation {
   createWitness(createWitnessInput: CreateWitnessInput!): Witness!
   updateWitness(updateWitnessInput: UpdateWitnessInput!): Witness!
   removeWitness(where: WitnessWhereUniqueInput): Witness!
-  createApprovedReport(createApprovedReportInput: CreateApprovedReportInput!): ApprovedReport!
-  updateApprovedReport(updateApprovedReportInput: UpdateApprovedReportInput!): ApprovedReport!
+  createApprovedReport(
+    createApprovedReportInput: CreateApprovedReportInput!
+  ): ApprovedReport!
+  updateApprovedReport(
+    updateApprovedReportInput: UpdateApprovedReportInput!
+  ): ApprovedReport!
   removeApprovedReport(where: ApprovedReportWhereUniqueInput): ApprovedReport!
   createCase(createCaseInput: CreateCaseInput!): Case!
   removeCase(where: CaseWhereUniqueInput): Case!
   createLocation(createLocationInput: CreateLocationInput!): Location!
   updateLocation(updateLocationInput: UpdateLocationInput!): Location!
   removeLocation(where: LocationWhereUniqueInput): Location!
-  createMissingPerson(createMissingPersonInput: CreateMissingPersonInput!): MissingPerson!
-  updateMissingPerson(updateMissingPersonInput: UpdateMissingPersonInput!): MissingPerson!
+  createMissingPerson(
+    createMissingPersonInput: CreateMissingPersonInput!
+  ): MissingPerson!
+  updateMissingPerson(
+    updateMissingPersonInput: UpdateMissingPersonInput!
+  ): MissingPerson!
   removeMissingPerson(where: MissingPersonWhereUniqueInput): MissingPerson!
   createOfficer(createOfficerInput: CreateOfficerInput!): Officer!
   updateOfficer(updateOfficerInput: UpdateOfficerInput!): Officer!
   removeOfficer(where: OfficerWhereUniqueInput): Officer!
   createReport(createReportInput: CreateReportInput!): Report!
-  createReports(createReportsInput: [CreateReportInputWithoutCaseId!]!, caseId: Int!): Case!
+  createReports(
+    createReportsInput: [CreateReportInputWithoutCaseId!]!
+    caseId: Int!
+  ): Case!
   updateReport(updateReportInput: UpdateReportInput!): Report!
   removeReport(where: ReportWhereUniqueInput): Report!
+  createComment(createCommentInput: CreateCommentInput!): Comment!
 }
 
 input LoginInput {
@@ -649,7 +794,9 @@ input SetRoleInput {
   role: RoleEnum!
 }
 
-"""Enum for roles"""
+"""
+Enum for roles
+"""
 enum RoleEnum {
   admin
   manager
@@ -764,4 +911,9 @@ input UpdateReportInput {
   images: [String!]
   description: String
   id: Int!
+}
+
+input CreateCommentInput {
+  content: String!
+  reportId: Int!
 }

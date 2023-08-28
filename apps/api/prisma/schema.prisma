@@ -17,6 +17,8 @@ model Witness {
     uid     String   @id
     name    String?
     reports Report[]
+
+    comments Comment[]
 }
 
 model Officer {
@@ -75,6 +77,21 @@ model Report {
     witnessId      String?
     audio          String?
     images         String[]
+
+    comments Comment[]
+}
+
+model Comment {
+    id        Int      @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    content String
+
+    Report     Report?  @relation(fields: [reportId], references: [id])
+    reportId   Int?
+    Witness    Witness? @relation(fields: [witnessUid], references: [uid])
+    witnessUid String?
 }
 
 model ApprovedReport {

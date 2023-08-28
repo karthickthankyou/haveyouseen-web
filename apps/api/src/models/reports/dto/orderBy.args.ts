@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client'
 import { RestrictProperties } from 'src/common/dtos/common.input'
 import { ApprovedReportOrderByWithRelationInput } from 'src/models/approved-reports/dto/orderBy.args'
 import { CaseOrderByWithRelationInput } from 'src/models/cases/dto/orderBy.args'
+import { CommentOrderByRelationAggregateInput } from 'src/models/comments/dtos/order-by.args'
 import { LocationOrderByWithRelationInput } from 'src/models/locations/dto/orderBy.args'
 import { WitnessOrderByWithRelationInput } from 'src/models/witnesses/dto/orderBy.args'
 
@@ -14,6 +15,8 @@ export class ReportOrderByWithRelationInput
       Prisma.ReportOrderByWithRelationInput
     >
 {
+  @Field(() => CommentOrderByRelationAggregateInput, { nullable: true })
+  comments: CommentOrderByRelationAggregateInput
   @Field(() => Prisma.SortOrder, { nullable: true })
   images: Prisma.SortOrder
   @Field(() => Prisma.SortOrder, { nullable: true })

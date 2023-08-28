@@ -50,6 +50,19 @@ query case($where: CaseWhereUniqueInput!) {
       id
       type
       audio
+      witness {
+        uid
+        name
+      }
+      comments {
+        id
+        content
+        createdAt
+        witness {
+          name
+          uid
+        }
+      }
       approvedReport {
         id
         description
@@ -145,6 +158,12 @@ mutation CreateReports(
   $caseId: Int!
 ) {
   createReports(createReportsInput: $createReportsInput, caseId: $caseId) {
+    id
+  }
+}
+
+mutation createComment($createCommentInput: CreateCommentInput!) {
+  createComment(createCommentInput: $createCommentInput) {
     id
   }
 }

@@ -147,6 +147,66 @@ export type CaseWhereUniqueInput = {
   id?: InputMaybe<Scalars['Int']>
 }
 
+export type Comment = {
+  __typename?: 'Comment'
+  content: Scalars['String']
+  createdAt: Scalars['DateTime']
+  id: Scalars['Int']
+  report?: Maybe<Report>
+  reportId: Scalars['Int']
+  updatedAt: Scalars['DateTime']
+  witness?: Maybe<Witness>
+  witnessUid: Scalars['String']
+}
+
+export type CommentListRelationFilter = {
+  every?: InputMaybe<CommentWhereInput>
+  none?: InputMaybe<CommentWhereInput>
+  some?: InputMaybe<CommentWhereInput>
+}
+
+export type CommentOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+}
+
+export type CommentOrderByWithRelationInput = {
+  Report?: InputMaybe<ReportOrderByWithRelationInput>
+  Witness?: InputMaybe<WitnessOrderByWithRelationInput>
+  content?: InputMaybe<SortOrder>
+  createdAt?: InputMaybe<SortOrder>
+  id?: InputMaybe<SortOrder>
+  reportId?: InputMaybe<SortOrder>
+  updatedAt?: InputMaybe<SortOrder>
+  witnessUid?: InputMaybe<SortOrder>
+}
+
+export enum CommentScalarFieldEnum {
+  Content = 'content',
+  CreatedAt = 'createdAt',
+  Id = 'id',
+  ReportId = 'reportId',
+  UpdatedAt = 'updatedAt',
+  WitnessUid = 'witnessUid',
+}
+
+export type CommentWhereInput = {
+  AND?: InputMaybe<Array<CommentWhereInput>>
+  NOT?: InputMaybe<Array<CommentWhereInput>>
+  OR?: InputMaybe<Array<CommentWhereInput>>
+  Report?: InputMaybe<ReportWhereInput>
+  Witness?: InputMaybe<WitnessWhereInput>
+  content?: InputMaybe<StringFilter>
+  createdAt?: InputMaybe<DateTimeFilter>
+  id?: InputMaybe<IntFilter>
+  reportId?: InputMaybe<IntFilter>
+  updatedAt?: InputMaybe<DateTimeFilter>
+  witnessUid?: InputMaybe<StringFilter>
+}
+
+export type CommentWhereUniqueInput = {
+  id?: InputMaybe<Scalars['Int']>
+}
+
 export type CreateApprovedReportInput = {
   description?: InputMaybe<Scalars['String']>
   id: Scalars['Int']
@@ -157,6 +217,11 @@ export type CreateCaseInput = {
   missingPerson: CreateMissingPersonInput
   reports: Array<CreateReportInputWithoutCaseId>
   status: Status
+}
+
+export type CreateCommentInput = {
+  content: Scalars['String']
+  reportId: Scalars['Int']
 }
 
 export type CreateLocationInput = {
@@ -434,6 +499,7 @@ export type Mutation = {
   __typename?: 'Mutation'
   createApprovedReport: ApprovedReport
   createCase: Case
+  createComment: Comment
   createLocation: Location
   createMissingPerson: MissingPerson
   createOfficer: Officer
@@ -467,6 +533,10 @@ export type MutationCreateApprovedReportArgs = {
 
 export type MutationCreateCaseArgs = {
   createCaseInput: CreateCaseInput
+}
+
+export type MutationCreateCommentArgs = {
+  createCommentInput: CreateCommentInput
 }
 
 export type MutationCreateLocationArgs = {
@@ -611,6 +681,8 @@ export type Query = {
   approvedReports: Array<ApprovedReport>
   case: Case
   cases: Array<Case>
+  comment: Comment
+  comments: Array<Comment>
   location: Location
   locations: Array<Location>
   missingPeople: Array<MissingPerson>
@@ -650,6 +722,19 @@ export type QueryCasesArgs = {
   skip?: InputMaybe<Scalars['Int']>
   take?: InputMaybe<Scalars['Int']>
   where?: InputMaybe<CaseWhereInput>
+}
+
+export type QueryCommentArgs = {
+  where?: InputMaybe<CommentWhereUniqueInput>
+}
+
+export type QueryCommentsArgs = {
+  cursor?: InputMaybe<CommentWhereUniqueInput>
+  distinct?: InputMaybe<Array<CommentScalarFieldEnum>>
+  orderBy?: InputMaybe<Array<CommentOrderByWithRelationInput>>
+  skip?: InputMaybe<Scalars['Int']>
+  take?: InputMaybe<Scalars['Int']>
+  where?: InputMaybe<CommentWhereInput>
 }
 
 export type QueryLocationArgs = {
@@ -773,6 +858,7 @@ export type Report = {
   audio?: Maybe<Scalars['String']>
   case?: Maybe<Case>
   caseId?: Maybe<Scalars['Int']>
+  comments?: Maybe<Array<Comment>>
   createdAt: Scalars['DateTime']
   description: Scalars['String']
   id: Scalars['Int']
@@ -801,6 +887,7 @@ export type ReportOrderByWithRelationInput = {
   audio?: InputMaybe<SortOrder>
   case?: InputMaybe<CaseOrderByWithRelationInput>
   caseId?: InputMaybe<SortOrder>
+  comments?: InputMaybe<CommentOrderByRelationAggregateInput>
   createdAt?: InputMaybe<SortOrder>
   description?: InputMaybe<SortOrder>
   id?: InputMaybe<SortOrder>
@@ -848,6 +935,7 @@ export type ReportWhereInput = {
   audio?: InputMaybe<StringFilter>
   case?: InputMaybe<CaseRelationFilter>
   caseId?: InputMaybe<IntFilter>
+  comments?: InputMaybe<CommentListRelationFilter>
   createdAt?: InputMaybe<DateTimeFilter>
   description?: InputMaybe<StringFilter>
   id?: InputMaybe<IntFilter>
@@ -968,6 +1056,7 @@ export type Witness = {
 }
 
 export type WitnessOrderByWithRelationInput = {
+  comments?: InputMaybe<CommentOrderByRelationAggregateInput>
   createdAt?: InputMaybe<SortOrder>
   name?: InputMaybe<SortOrder>
   reports?: InputMaybe<ReportOrderByRelationAggregateInput>
@@ -991,6 +1080,7 @@ export type WitnessWhereInput = {
   AND?: InputMaybe<Array<WitnessWhereInput>>
   NOT?: InputMaybe<Array<WitnessWhereInput>>
   OR?: InputMaybe<Array<WitnessWhereInput>>
+  comments?: InputMaybe<CommentListRelationFilter>
   createdAt?: InputMaybe<DateTimeFilter>
   name?: InputMaybe<StringFilter>
   reports?: InputMaybe<ReportListRelationFilter>

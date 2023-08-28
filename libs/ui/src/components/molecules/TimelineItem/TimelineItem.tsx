@@ -37,9 +37,9 @@ const MyTimelineItem = ({ children, type }: TimelineStepType) => {
       <TimelineSeparator>
         <IconType type={type} />
 
-        <TimelineConnector />
+        <TimelineConnector className="bg-gray-50" />
       </TimelineSeparator>
-      <TimelineContent classes={{ root: 'p-0 pl-1 text-xs' }}>
+      <TimelineContent classes={{ root: 'p-0 pl-1 mb-4' }}>
         {children}
       </TimelineContent>
     </TimelineItem>
