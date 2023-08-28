@@ -11,11 +11,11 @@ import {
   useUnapprovedReportsQuery,
   useSearchCasesQuery,
   useCaseLazyQuery,
-  SearchCasesQueryResult,
+  useCaseQuery,
 } from '@haveyouseen-org/network/src/generated'
 
 import { Map } from '../../organisms/Map'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import {
   IconBulb,
   IconInfoSquare,
@@ -44,7 +44,6 @@ import { useRouter } from 'next/router'
 
 import { MapLines } from '../../molecules/MapLines'
 
-import { RedirectToSearch } from '../../molecules/RedirectToSearch'
 import { KeyValue } from '../../atoms/KeyValue'
 import { AddReports } from '../AddReports'
 import { ReportsTimeline } from '../ReportsTimeline'
@@ -52,11 +51,12 @@ import { MissingPersonInfo } from '../../organisms/MissingPersonInfo'
 import { ContactInfo } from '../../organisms/ContactInfo'
 import { useKeypress } from '@haveyouseen-org/util'
 import { useAppSelector } from '@haveyouseen-org/store'
-import { selectUid, selectUser } from '@haveyouseen-org/store/user'
+import { selectUser } from '@haveyouseen-org/store/user'
 import { DefaultZoomControls } from '../../organisms/Map/ZoomControls/ZoomControls'
 import { CurrentLocationButton } from '../../molecules/CurrentLocationButton'
 import { SearchPlaceBox } from '../../molecules/SearchPlaceBox'
 import { Loader } from '../../molecules/Loader'
+import { useSetMapBoundsBasedOnReports } from '@haveyouseen-org/hooks/src/location'
 
 export interface IHomePageProps {}
 
@@ -89,7 +89,7 @@ export const HomePage = ({}: IHomePageProps) => {
           <DefaultZoomControls />
         </Panel>
         {caseId ? (
-          <DisplayOneCase caseId={caseId ? +caseId : undefined} />
+          <DisplayOneCase caseId={+caseId} />
         ) : (
           <DisplayAllMarkers bounds={bounds} />
         )}
@@ -136,12 +136,11 @@ export const SidebarInfo = ({
   )
 }
 
-export const DisplayOneCase = ({ caseId }: { caseId?: number }) => {
+export const DisplayOneCase = ({ caseId }: { caseId: number }) => {
   const { current: map } = useMap()
-  const [getCase, { data, loading }] = useCaseLazyQuery()
-  useEffect(() => {
-    if (caseId) getCase({ variables: { where: { id: caseId } } })
-  }, [caseId])
+  const { data, loading } = useCaseQuery({
+    variables: { where: { id: caseId } },
+  })
 
   useSetHeaderText(data?.case.missingPerson.displayName)
   useSetHeaderPic(data?.case.missingPerson.images?.[0])
@@ -164,6 +163,8 @@ export const DisplayOneCase = ({ caseId }: { caseId?: number }) => {
     const lng = location?.longitude || 0
     map?.flyTo({ center: { lat, lng }, zoom: 5, essential: true })
   }, [data?.case])
+
+  useSetMapBoundsBasedOnReports({ reports: data?.case.reports || [] })
 
   const router = useRouter()
 

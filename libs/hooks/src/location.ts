@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
+import { useMap } from 'react-map-gl'
+
 import { useDebouncedValue } from './async'
+import { CaseQuery } from '@haveyouseen-org/network/src/generated'
 
 export type LocationInfo = { placeName: string; latLng: [number, number] }
 
@@ -28,4 +31,50 @@ export const useSearchLocation = () => {
   }, [debouncedSearchText, setLocationInfo])
 
   return { loading, setLoading, searchText, setSearchText, locationInfo }
+}
+
+export const useSetMapBoundsBasedOnReports = ({
+  reports = [],
+}: {
+  reports: CaseQuery['case']['reports']
+}) => {
+  const { current: map } = useMap()
+  useEffect(() => {
+    const locations = reports.map((report) => report.location)
+    if (locations.length === 0) {
+      return
+    }
+
+    // Calculate bounds
+    let minLat = locations[0]?.latitude || 0
+    let maxLat = locations[0]?.latitude || 0
+    let minLng = locations[0]?.longitude || 0
+    let maxLng = locations[0]?.longitude || 0
+
+    locations.forEach((location) => {
+      if (!location) return
+      minLat = Math.min(minLat, location.latitude)
+      maxLat = Math.max(maxLat, location.latitude)
+      minLng = Math.min(minLng, location.longitude)
+      maxLng = Math.max(maxLng, location.longitude)
+    })
+
+    // Add padding in percentage
+    const latPadding = (maxLat - minLat) * 0.4 // 10% padding
+    const lngPadding = (maxLng - minLng) * 0.4 // 10% padding
+
+    minLat -= latPadding
+    maxLat += latPadding
+    minLng -= lngPadding
+    maxLng += lngPadding
+
+    // Set bounds with padding
+    map?.fitBounds(
+      [
+        [minLng, minLat],
+        [maxLng, maxLat],
+      ],
+      { padding: 50 },
+    )
+  }, [reports, map])
 }
