@@ -20,7 +20,6 @@ import {
   IconBulb,
   IconInfoSquare,
   IconPinned,
-  IconRefresh,
   IconX,
 } from '@tabler/icons-react'
 
@@ -55,6 +54,9 @@ import { useKeypress } from '@haveyouseen-org/util'
 import { useAppSelector } from '@haveyouseen-org/store'
 import { selectUid, selectUser } from '@haveyouseen-org/store/user'
 import { DefaultZoomControls } from '../../organisms/Map/ZoomControls/ZoomControls'
+import { CurrentLocationButton } from '../../molecules/CurrentLocationButton'
+import { SearchPlaceBox } from '../../molecules/SearchPlaceBox'
+import { Loader } from '../../molecules/Loader'
 
 export interface IHomePageProps {}
 
@@ -75,6 +77,12 @@ export const HomePage = ({}: IHomePageProps) => {
         onZoomEnd={(e) => handleMapChange(e.target)}
         onLoad={(e) => handleMapChange(e.target)}
       >
+        <Panel position="left-top">
+          <SearchPlaceBox />
+        </Panel>
+        <Panel position="right-top">
+          <CurrentLocationButton />
+        </Panel>
         <Panel position="right-center">
           <DefaultZoomControls />
         </Panel>
@@ -217,7 +225,7 @@ export const DisplayOneCase = ({ caseId }: { caseId?: number }) => {
       <ManageUnapprovedReports />
       {loading ? (
         <Panel position="center-bottom">
-          <IconRefresh className="animate-spin-reverse" />
+          <Loader />
         </Panel>
       ) : null}
       {formReports?.map((report, index) => (
@@ -340,12 +348,17 @@ export const DisplayAllMarkers = ({ bounds }: { bounds?: LngLatBounds }) => {
     data?.searchCases,
   )
 
-  console.log(data, loading)
   return (
     <div>
       {loading ? (
         <Panel position="center-bottom">
-          <IconRefresh className="animate-spin-reverse" />
+          <Loader />
+        </Panel>
+      ) : data?.searchCases.length === 0 ? (
+        <Panel position="center-center">
+          <div className="px-3 py-2 border rounded-full shadow-lg text-gray backdrop-blur-sm">
+            No reports in this area.
+          </div>
         </Panel>
       ) : null}
       {displayData?.map((caseInfo) => (

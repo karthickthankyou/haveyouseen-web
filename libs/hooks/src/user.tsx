@@ -108,7 +108,9 @@ export const useInitialiseUser = ({ role }: { role?: Role }) => {
               },
             })
           })()
-          notification$.next({ message: 'Witness created.' })
+          notification$.next({
+            message: `Welcome ${displayName ? displayName : null}`,
+          })
         }
       }
     } catch (error) {
