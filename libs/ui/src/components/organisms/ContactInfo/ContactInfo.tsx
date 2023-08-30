@@ -6,14 +6,16 @@ export interface IContactInfoProps {
 
 export const ContactInfo = ({ contact }: IContactInfoProps) => {
   return (
-    <>
-      <div className="text-2xl font-light">
+    <div>
+      <div className="text-lg">
         Do you have any information regarding this person?
       </div>
       <div>
-        <div className="text-lg font-light">Contact</div>
-        {contact?.map((contact) => <div key={contact}>{contact}</div>)}
+        <div>Contact</div>
+        <div className="text-lg">
+          {contact?.map((contact) => <div key={contact}>{contact}</div>)}
+        </div>
       </div>
-    </>
+    </div>
   )
 }

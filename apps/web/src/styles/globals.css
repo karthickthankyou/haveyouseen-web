@@ -3,9 +3,28 @@
 @tailwind utilities;
 
 audio {
-  @apply w-full h-8 bg-white;
+  @apply w-full h-6 bg-white;
 }
 
 .mapboxgl-popup-content {
-  @apply shadow-lg p-0 rounded-none overflow-hidden bg-white/20 backdrop-blur-sm border-x border-t border-white !important;
+  @apply shadow-lg p-0 rounded-md overflow-hidden bg-white/20 backdrop-blur-sm border-x border-t border-white !important;
+}
+
+/* width */
+::-webkit-scrollbar {
+  @apply w-1;
+}
+
+Track ::-webkit-scrollbar-track {
+  @apply bg-gray-50;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-md;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-500 rounded-md;
 }

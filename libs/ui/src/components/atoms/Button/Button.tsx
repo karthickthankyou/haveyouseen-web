@@ -70,7 +70,7 @@ export const Button = ({
       // eslint-disable-next-line react/button-has-type
       type={type}
       disabled={disabled || isLoading}
-      className={` relative font-medium ${sizeCls} ${fwCls} ${variantCls} ${disCls}  ${className} `}
+      className={` relative rounded font-medium ${sizeCls} ${fwCls} ${variantCls} ${disCls}  ${className} `}
       {...props}
     >
       {isLoading ? (

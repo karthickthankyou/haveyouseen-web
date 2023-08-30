@@ -10,7 +10,6 @@ import {
   useCreateApprovedReportMutation,
   useUnapprovedReportsQuery,
   useSearchCasesQuery,
-  useCaseLazyQuery,
   useCaseQuery,
 } from '@haveyouseen-org/network/src/generated'
 
@@ -77,14 +76,6 @@ export const HomePage = ({}: IHomePageProps) => {
         onZoomEnd={(e) => handleMapChange(e.target)}
         onLoad={(e) => handleMapChange(e.target)}
       >
-        <Panel position="right-top">
-          <div className="flex">
-            <CurrentLocationButton
-              moveToUserLocationOnLoad={Boolean(router.isReady && !caseId)}
-            />
-            <SearchPlaceBox />
-          </div>
-        </Panel>
         <Panel position="right-center">
           <DefaultZoomControls />
         </Panel>
@@ -111,13 +102,13 @@ export const SidebarInfo = ({
 
   if (!caseInfo?.missingPerson) return null
   return (
-    <div className="w-full max-w-md px-2 bg-white shadow-lg ">
+    <div className="w-full max-w-md px-2 bg-white rounded shadow-lg ">
       <Accordion
         defaultOpen
         titleClassName="text-lg px-3"
         title={caseInfo.missingPerson.displayName}
       >
-        <div className="space-y-2 overflow-y-auto h-[calc(100vh-8rem)]">
+        <div className="space-y-6 overflow-y-auto h-[calc(100vh-8rem)] pr-2">
           <MissingPersonInfo missingPerson={caseInfo.missingPerson} />
           <ReportsTimeline reports={reports} />
           <ContactInfo contact={caseInfo.contact} />
@@ -200,23 +191,25 @@ export const DisplayOneCase = ({ caseId }: { caseId: number }) => {
     ],
   })
 
+  useKeypress(['Escape'], () => router.push({ pathname: '/' }))
+
   return (
     <FormProvider {...methods}>
-      <Panel position="left-top">
-        <SidebarInfo caseInfo={data?.case} reports={sortedReports} />
-
+      <Panel position="right-top">
         <div className="flex gap-2">
           <Button
             variant="text"
             size="none"
             onClick={() => {
-              //   thisMap?.flyTo({ zoom: 6 })
               router.push({ pathname: '/' })
             }}
           >
-            Show all cases
+            Show all cases (ESC)
           </Button>
         </div>
+      </Panel>
+      <Panel position="left-top">
+        <SidebarInfo caseInfo={data?.case} reports={sortedReports} />
       </Panel>
       {sortedReports?.map((report, i) => (
         <MarkerWithPopupCase
@@ -353,6 +346,12 @@ export const DisplayAllMarkers = ({ bounds }: { bounds?: LngLatBounds }) => {
 
   return (
     <div>
+      <Panel position="right-top">
+        <div className="flex">
+          <CurrentLocationButton moveToUserLocationOnLoad={true} />
+          <SearchPlaceBox />
+        </div>
+      </Panel>
       {loading ? (
         <Panel position="center-bottom">
           <Loader />
@@ -401,7 +400,7 @@ export const MarkerWithPopupCase = ({
             onOpen={() => console.log('Opened')}
             closeOnClick={false}
             anchor="bottom"
-            offset={24}
+            offset={36}
             closeButton={false}
           >
             <PopupContent onClose={() => setShowPopup(false)}>
@@ -474,18 +473,18 @@ export const MarkerWithPopup = ({
           onOpen={() => console.log('Opened')}
           closeOnClick={false}
           anchor="bottom"
-          offset={24}
+          offset={36}
           closeButton={false}
         >
           <PopupContent onClose={() => setShowPopup(false)}>
-            <div className="space-y-1">
+            <div className="space-y-1 rounded">
               <Image
                 src={marker.case.missingPerson.images?.[0]}
                 alt=""
                 width={200}
                 height={200}
               />
-              <div className="p-1">
+              <div className="p-2 space-y-2">
                 <KeyValue title="Name">
                   {marker.case.missingPerson.displayName || '-'}
                 </KeyValue>
@@ -521,7 +520,7 @@ export const MarkerWithPopup = ({
         <Image
           width={30}
           height={30}
-          className="rounded-full shadow-lg cursor-pointer outline-gray-300 shadow-black/50"
+          className="border border-white rounded shadow-lg cursor-pointer aspect-[3/4] object-cover outline-gray-300 shadow-black/50"
           alt={marker.case?.missingPerson.displayName || ''}
           src={
             marker.case?.missingPerson?.images?.length
@@ -529,7 +528,7 @@ export const MarkerWithPopup = ({
               : ''
           }
         />
-        <div className="absolute mt-1 leading-3 text-center -translate-x-1/3">
+        <div className="absolute px-1 py-1 mt-1 font-semibold leading-3 text-center -translate-x-1/2 rounded-sm bg-white/50 left-1/2">
           {marker.case.missingPerson.displayName}
         </div>
       </Marker>

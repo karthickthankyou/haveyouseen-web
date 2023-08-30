@@ -20,10 +20,10 @@ export const Brand = ({ type }: IBrandProps) => {
           src={victimPic}
           width={100}
           height={100}
-          className="object-cover w-8 h-8 border border-black shadow-lg"
+          className="object-cover w-8 h-8 border border-white rounded shadow-xl shadow-black/30"
         />
       ) : (
-        <div className="h-full p-1 border border-black shadow-lg">
+        <div className="h-full p-1 border border-black rounded shadow-lg">
           <IconUser className="stroke-2" />
         </div>
       )}

@@ -12,14 +12,12 @@ import { Notifications } from '@haveyouseen-org/ui/src/components/organisms/Noti
 import { useInitialiseUser } from '@haveyouseen-org/hooks/src/user'
 
 const MENUITEMS: MenuItem[] = [
-  { label: 'About', href: '/about', loggedIn: false },
   { label: 'Search', href: '/', loggedIn: true },
+  { label: 'About', href: '/about', loggedIn: false },
 ]
 const SUBMENUITEMS: MenuItem[] = [
   ...MENUITEMS,
-  { label: 'Contact', href: '/contact', loggedIn: false },
   { label: 'FAQs', href: '/faqs', loggedIn: false },
-  { label: 'How it works', href: '/how-it-works', loggedIn: false },
 ]
 
 export default function App({ Component, pageProps }: AppProps) {

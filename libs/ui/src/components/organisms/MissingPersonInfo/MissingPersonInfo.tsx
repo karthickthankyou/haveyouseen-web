@@ -16,7 +16,7 @@ export const MissingPersonInfo = ({
       <Image
         alt={missingPerson.displayName}
         fill
-        className="relative object-cover w-full h-full max-w-sm aspect-square"
+        className="relative object-cover w-full h-full max-w-sm rounded aspect-square"
         src={missingPerson?.images ? missingPerson?.images[0] : ''}
       />
       <KeyValue title="Name">{missingPerson.displayName}</KeyValue>

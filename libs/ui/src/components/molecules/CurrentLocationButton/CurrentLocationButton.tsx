@@ -38,22 +38,14 @@ export const CurrentLocationButton = ({
 
   return (
     <>
-      {loading ? (
-        <div className="px-3 py-2 space-y-2 text-white bg-black bg-opacity-50 border border-black rounded-full backdrop-blur-sm ">
-          <div className="flex items-center gap-2">
-            <IconLoader className="animate-spin" />
-            Loading your location.
-          </div>
-        </div>
-      ) : (
-        <Button
-          variant="text"
-          className="hover:bg-gray-200"
-          onClick={fetchAndSetLocation}
-        >
-          <IconCurrentLocation className="stroke-1.5" />
-        </Button>
-      )}
+      <Button
+        variant="text"
+        className="hover:bg-gray-200"
+        onClick={fetchAndSetLocation}
+        isLoading={loading}
+      >
+        <IconCurrentLocation className="stroke-1.5" />
+      </Button>
     </>
   )
 }

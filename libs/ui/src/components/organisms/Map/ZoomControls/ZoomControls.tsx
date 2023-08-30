@@ -6,7 +6,7 @@ import { useMap } from 'react-map-gl'
 export interface IZoomControlsProps {}
 
 const MapControls = ({ children }: { children: ReactNode }) => (
-  <div className="flex flex-col border border-white divide-y divide-white rounded shadow-lg bg-white/50 backdrop-blur backdrop-filter">
+  <div className="flex flex-col overflow-hidden border border-white divide-y divide-white rounded shadow-lg bg-white/50 backdrop-blur backdrop-filter">
     {children}
   </div>
 )

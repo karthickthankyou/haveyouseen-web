@@ -106,7 +106,7 @@ export const RegisterForm = ({ role, className }: IRegisterFormProps) => {
       </Form>
       <div className="flex justify-center gap-2 mt-6">
         <PlainButton
-          className="p-1 border-2 rounded-full hover:shadow-lg"
+          className="p-1 border-2 border-black rounded-full hover:shadow-lg"
           onClick={googleSignIn}
         >
           <IconBrandGoogle />

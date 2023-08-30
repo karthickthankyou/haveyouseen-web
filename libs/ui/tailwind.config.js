@@ -17,7 +17,7 @@ export default {
       ringOpacity: 20,
       outlineColor: colorsConfig.primary.DEFAULT,
       borderRadius: {
-        DEFAULT: '0',
+        DEFAULT: '4px',
       },
       spacing: spacingConfig,
       animation: animationConfig,

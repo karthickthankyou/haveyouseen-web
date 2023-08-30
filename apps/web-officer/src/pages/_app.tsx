@@ -19,7 +19,6 @@ const SUBMENUITEMS: MenuItem[] = [
   ...MENUITEMS,
   { label: 'Contact', href: '/contact', loggedIn: false },
   { label: 'FAQs', href: '/faqs', loggedIn: false },
-  { label: 'How it works', href: '/how-it-works', loggedIn: false },
 ]
 
 export default function App({ Component, pageProps }: AppProps) {

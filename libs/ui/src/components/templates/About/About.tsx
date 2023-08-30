@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export const About = () => {
   return (
     <div className="min-h-screen py-12">
@@ -10,22 +12,14 @@ export const About = () => {
           people and other loved beings.
         </p>
 
-        <div className="mt-12">
-          <h2 className="text-xl font-bold text-gray-900">Our Mission</h2>
-          <p className="mt-4 text-lg text-gray-600">
-            Our mission is to make the world a better place by enabling seamless
-            and efficient interactions through technology.
-          </p>
-        </div>
-
-        <div className="mt-12">
+        <div className="mt-12 space-y-2">
           <h2 className="text-xl font-bold text-gray-900">Our Team</h2>
-          <div className="grid gap-6 mt-6 md:grid-cols-2 lg:grid-cols-3">
-            {/* You can repeat this section for each team member */}
-            <div className="bg-white rounded-lg shadow-lg">
+          <p className="mt-4">Um... Its just me for now.</p>
+          <div>
+            <div className="max-w-xs bg-white rounded-lg shadow-lg">
               <img
-                className="w-full mx-auto aspect-square"
-                src="https://via.placeholder.com/100"
+                className="object-cover w-full  mx-auto aspect-[3/4]"
+                src="https://firebasestorage.googleapis.com/v0/b/karthick-haveyouseen.appspot.com/o/files%2FScreenshot_20221018-220853.jpg?alt=media&token=aa104dff-1611-4c21-ae69-b1981c5e86d2"
                 alt="Team member name"
               />
               <div className="p-2">
@@ -38,21 +32,21 @@ export const About = () => {
                 </p>
               </div>
             </div>
-            {/* Repeat for other team members */}
           </div>
         </div>
 
         <div className="mt-12">
-          <h2 className="text-xl font-bold text-gray-900">Contact Us</h2>
+          <h2 className="text-xl font-bold text-gray-900">Contact</h2>
           <p className="mt-4 text-lg text-gray-600">
-            Feel free to get in touch with us at{' '}
-            <a
-              href="mailto:info@example.com"
+            Feel free to get in touch with me through my{' '}
+            <Link
+              target="_blank"
+              href="https://www.linkedin.com/in/iamkarthickr/"
               className="text-blue-600 underline"
             >
-              info@example.com
-            </a>
-            , or find us on social media.
+              LinkedIn
+            </Link>
+            .
           </p>
         </div>
       </div>
