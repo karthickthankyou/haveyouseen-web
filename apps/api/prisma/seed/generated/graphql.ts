@@ -520,6 +520,7 @@ export type Mutation = {
   setAdmin: Scalars['Boolean']
   setRole: Scalars['Boolean']
   updateApprovedReport: ApprovedReport
+  updateCaseStatus: Case
   updateLocation: Location
   updateMissingPerson: MissingPerson
   updateOfficer: Officer
@@ -614,6 +615,10 @@ export type MutationSetRoleArgs = {
 
 export type MutationUpdateApprovedReportArgs = {
   updateApprovedReportInput: UpdateApprovedReportInput
+}
+
+export type MutationUpdateCaseStatusArgs = {
+  updateCaseInput: UpdateCaseInput
 }
 
 export type MutationUpdateLocationArgs = {
@@ -1002,6 +1007,11 @@ export type StringListFilter = {
 export type UpdateApprovedReportInput = {
   description?: InputMaybe<Scalars['String']>
   id: Scalars['Int']
+}
+
+export type UpdateCaseInput = {
+  id: Scalars['Int']
+  status: Status
 }
 
 export type UpdateLocationInput = {

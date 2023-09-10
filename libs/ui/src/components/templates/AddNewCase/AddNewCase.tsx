@@ -50,11 +50,16 @@ import Accordion from '../../molecules/Accordion'
 import { PlainButton } from '../../atoms/PlainButton'
 import { selectUid } from '@haveyouseen-org/store/user'
 import { Switch } from '../../atoms/Switch'
+import { FormError } from '../../atoms/FormError'
 
 export interface IAddNewCaseProps {}
 
 export const AddNewCase = ({}: IAddNewCaseProps) => {
-  const { handleSubmit, reset } = useFormContext<FormTypeAddNewCase>()
+  const {
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useFormContext<FormTypeAddNewCase>()
 
   const { displayName, images } = useWatch<FormTypeAddNewCase>()
   useSetHeaderText(displayName)
@@ -81,6 +86,12 @@ export const AddNewCase = ({}: IAddNewCaseProps) => {
   }, [data, error, router])
   const [{ uploading }, uploadImages] = useImageUpload()
   const uid = useAppSelector(selectUid)
+
+  useEffect(() => {
+    if (errors) {
+      console.log('errors while submitting... ', errors)
+    }
+  }, [errors])
 
   return (
     <div>
@@ -256,8 +267,8 @@ export const AddCaseDetails = () => {
         />
       </HtmlLabel>
       <FormGrid>
-        <HtmlLabel title="dob" error={errors.displayName?.message}>
-          <HtmlInput type="date" {...register('dob')} />
+        <HtmlLabel title="dob" error={errors.dob?.message}>
+          <HtmlInput type="date" {...register('dob')} required />
         </HtmlLabel>
         <HtmlLabel title="Gender" error={errors.gender?.message}>
           <HtmlSelect {...register('gender')}>
@@ -492,25 +503,21 @@ export const AddContacts = () => {
         </Button>
       </div>
 
+      <FormError error={errors.contact && errors.contact?.message} />
+
       <div className="grid grid-cols-2 gap-2">
         {fieldsContact.map((item, index) => (
-          <HtmlLabel
-            key={item.id}
-            title="Contact number"
-            error={errors.contact && errors.contact[index]?.message}
-          >
-            <div className="flex">
-              <HtmlInput {...register(`contact.${index}.number`)} />
-              <PlainButton
-                className="p-1"
-                onClick={() => {
-                  removeContactField(index)
-                }}
-              >
-                <IconX className="w-5 h-5 text-gray-600 " />
-              </PlainButton>
-            </div>
-          </HtmlLabel>
+          <div className="flex">
+            <HtmlInput {...register(`contact.${index}.number`)} />
+            <PlainButton
+              className="p-1"
+              onClick={() => {
+                removeContactField(index)
+              }}
+            >
+              <IconX className="w-5 h-5 text-gray-600 " />
+            </PlainButton>
+          </div>
         ))}
       </div>
     </div>
@@ -533,19 +540,79 @@ export const AccordionTitle = ({
 }
 
 export const AddReports = () => {
-  const { control } = useFormContext<FormTypeAddNewCase>()
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext<FormTypeAddNewCase>()
   const { myMap } = useMap()
-  const { fields, append } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: 'reports',
   })
+  const { reports } = useWatch<FormTypeAddNewCase>({ control })
 
   return (
     <div className="flex flex-col gap-2">
       <div className="text-lg">Reports</div>
+      <FormError error={errors.reports?.message} />
       <div className="p-3 space-y-3 bg-gray-25">
         {fields.map((field, index) => (
-          <ReportForm key={field.id} field={field} index={index} />
+          <Accordion
+            defaultOpen
+            title={
+              <div className="flex items-center gap-2">
+                <div>
+                  {reports?.[index]?.showPublic ? (
+                    <IconEye />
+                  ) : (
+                    <IconEyeClosed />
+                  )}
+                </div>
+                <div>
+                  <div className="">
+                    {reports?.[index]?.time
+                      ? format(new Date(reports?.[index]?.time || ''), 'PPp')
+                      : null}
+                  </div>
+                  <div className="text-xs">
+                    {reports?.[index]?.description?.substring(0, 100) || ''}...
+                  </div>
+                </div>
+              </div>
+            }
+          >
+            <div className="flex justify-end">
+              <Button
+                variant="text"
+                size="none"
+                color="error"
+                onClick={() => {
+                  remove(index)
+                }}
+              >
+                Remove
+              </Button>
+            </div>
+            <FormGridItem index={index} />
+
+            <div className="flex justify-between mt-1">
+              <Button
+                variant="text"
+                size="none"
+                onClick={() =>
+                  myMap?.flyTo({
+                    center: [
+                      reports?.[index].lng || 0,
+                      reports?.[index].lat || 0,
+                    ],
+                    essential: true,
+                  })
+                }
+              >
+                Go to location
+              </Button>
+            </div>
+          </Accordion>
         ))}
         <Button
           variant="outlined"
@@ -572,143 +639,91 @@ export const AddReports = () => {
   )
 }
 
-export const ReportForm = ({
-  field,
-  index,
-}: {
-  field: FormTypeAddNewCase['reports'][0]
-  index: number
-}) => {
-  const { register, control, setValue, resetField } =
+export const FormGridItem = ({ index }: { index: number }) => {
+  const { control, register, resetField, setValue } =
     useFormContext<FormTypeAddNewCase>()
-  const { myMap } = useMap()
-  const { remove } = useFieldArray({
+  const { reports } = useWatch<FormTypeAddNewCase>({ control })
+
+  useFieldArray({
     control,
     name: 'reports',
   })
   const [showPublic, setShowPublic] = useState(false)
-  const { reports } = useWatch<FormTypeAddNewCase>({ control })
+
   return (
-    <Accordion
-      defaultOpen
-      key={`${field.localId}-${field.time}`}
-      title={
-        <div className="flex items-center gap-2">
-          <div>
-            {reports?.[index]?.showPublic ? <IconEye /> : <IconEyeClosed />}
-          </div>
-          <div>
-            <div className="">
-              {reports?.[index]?.time
-                ? format(new Date(reports?.[index]?.time || ''), 'PPp')
-                : null}
-            </div>
-            <div className="text-xs">
-              {reports?.[index]?.description?.substring(0, 20) || ''}
-            </div>
-          </div>
-        </div>
-      }
-    >
-      <div className="flex justify-end">
-        <Button
-          variant="text"
-          size="none"
-          color="error"
-          onClick={() => remove(index)}
-        >
-          Remove
-        </Button>
-      </div>
-      <FormGrid>
-        <ImageUploadPreview
-          src={reports?.[index]?.images?.[0] || undefined}
-          clearImage={() => resetField(`reports.${index}.images`)}
-        >
+    <FormGrid>
+      <ImageUploadPreview
+        src={reports?.[index]?.images?.[0] || undefined}
+        clearImage={() => resetField(`reports.${index}.images`)}
+      >
+        <Controller
+          control={control}
+          name={`reports.${index}.images`}
+          render={({ field }) => (
+            <HtmlInput
+              type="file"
+              accept="image/*"
+              multiple={true}
+              onChange={(e) => field.onChange(e?.target?.files)}
+            />
+          )}
+        />
+      </ImageUploadPreview>
+      <div className="flex flex-col gap-3">
+        <HtmlLabel title="Time">
           <Controller
             control={control}
-            name={`reports.${index}.images`}
+            name={`reports.${index}.time`}
             render={({ field }) => (
-              <HtmlInput
-                type="file"
-                accept="image/*"
-                multiple={true}
-                onChange={(e) => field.onChange(e?.target?.files)}
-              />
+              <HtmlInput {...field} type="datetime-local" />
             )}
           />
-        </ImageUploadPreview>
-        <div className="flex flex-col gap-3">
-          <HtmlLabel title="Time">
-            <Controller
-              control={control}
-              name={`reports.${index}.time`}
-              render={({ field }) => (
-                <HtmlInput {...field} type="datetime-local" />
-              )}
+        </HtmlLabel>
+        <HtmlLabel title="Type">
+          <HtmlSelect {...register(`reports.${index}.type`)}>
+            <option defaultChecked value={ReportType.Sighting}>
+              Sighting
+            </option>
+            <option defaultChecked value={ReportType.Lead}>
+              Lead
+            </option>
+            <option defaultChecked value={ReportType.GeneralInformation}>
+              General Information
+            </option>
+          </HtmlSelect>
+        </HtmlLabel>
+        <HtmlLabel title="Address" optional>
+          <HtmlTextArea {...register(`reports.${index}.address`)} />
+        </HtmlLabel>
+        <HtmlLabel title="Voice" optional>
+          <AudioRecord
+            setAudio={(url) => setValue(`reports.${index}.audio`, url)}
+          />
+        </HtmlLabel>{' '}
+        <HtmlLabel title="Description">
+          <HtmlTextArea {...register(`reports.${index}.description`)} />
+        </HtmlLabel>
+        <DisplayLocation
+          lat={reports?.[index]?.lat || 0}
+          lng={reports?.[index]?.lng || 0}
+        />
+        <Switch
+          label={'Public'}
+          checked={showPublic}
+          onChange={function (checked: boolean): void {
+            setValue(`reports.${index}.showPublic`, checked)
+            setShowPublic(checked)
+          }}
+        />
+        {showPublic ? (
+          <HtmlLabel title="Officer Description">
+            <HtmlTextArea
+              {...register(`reports.${index}.officerDescription`)}
             />
           </HtmlLabel>
-          <HtmlLabel title="Type">
-            <HtmlSelect {...register(`reports.${index}.type`)}>
-              <option defaultChecked value={ReportType.Sighting}>
-                Sighting
-              </option>
-              <option defaultChecked value={ReportType.Lead}>
-                Lead
-              </option>
-              <option defaultChecked value={ReportType.GeneralInformation}>
-                General Information
-              </option>
-            </HtmlSelect>
-          </HtmlLabel>
-          <HtmlLabel title="Address" optional>
-            <HtmlTextArea {...register(`reports.${index}.address`)} />
-          </HtmlLabel>
-          <HtmlLabel title="Voice" optional>
-            <AudioRecord
-              setAudio={(url) => setValue(`reports.${index}.audio`, url)}
-            />
-          </HtmlLabel>{' '}
-          <HtmlLabel title="Description">
-            <HtmlTextArea {...register(`reports.${index}.description`)} />
-          </HtmlLabel>
-          <DisplayLocation
-            lat={reports?.[index]?.lat || 0}
-            lng={reports?.[index]?.lng || 0}
-          />
-          <Switch
-            label={'Public'}
-            checked={showPublic}
-            onChange={function (checked: boolean): void {
-              setValue(`reports.${index}.showPublic`, checked)
-              setShowPublic(checked)
-            }}
-          />
-          {showPublic ? (
-            <HtmlLabel title="Officer Description">
-              <HtmlTextArea
-                {...register(`reports.${index}.officerDescription`)}
-              />
-            </HtmlLabel>
-          ) : null}
-        </div>
-      </FormGrid>
-
-      <div className="flex justify-between mt-1">
-        <Button
-          variant="text"
-          size="none"
-          onClick={() =>
-            myMap?.flyTo({
-              center: [reports?.[index].lng || 0, reports?.[index].lat || 0],
-              essential: true,
-            })
-          }
-        >
-          Go to location
-        </Button>
+        ) : null}
       </div>
-    </Accordion>
+    </FormGrid>
   )
 }
 

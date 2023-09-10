@@ -18,7 +18,6 @@ export const CurrentLocationButton = ({
         map?.flyTo({
           center: { lat: latitude, lng: longitude },
           zoom: 10,
-          essential: true,
         })
         setLoading(false)
       },

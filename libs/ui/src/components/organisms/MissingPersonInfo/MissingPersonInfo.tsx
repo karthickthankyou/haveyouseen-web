@@ -5,10 +5,12 @@ import Image from 'next/image'
 
 export interface IMissingPersonInfoProps {
   missingPerson?: NonNullable<CaseQuery['case']>['missingPerson']
+  status: CaseQuery['case']['status']
 }
 
 export const MissingPersonInfo = ({
   missingPerson,
+  status,
 }: IMissingPersonInfoProps) => {
   if (!missingPerson) return null
   return (
@@ -20,6 +22,11 @@ export const MissingPersonInfo = ({
         src={missingPerson?.images ? missingPerson?.images[0] : ''}
       />
       <KeyValue title="Name">{missingPerson.displayName}</KeyValue>
+      <KeyValue title="Status">
+        <div className="capitalize">
+          {status.split('_').join(' ').toLowerCase()}
+        </div>
+      </KeyValue>
       <KeyValue title="Description">{missingPerson.description}</KeyValue>
       <div className="grid justify-between grid-cols-2 gap-1">
         <KeyValue title="Gender">{missingPerson.gender}</KeyValue>

@@ -521,6 +521,7 @@ export type Mutation = {
   setAdmin: Scalars['Boolean']
   setRole: Scalars['Boolean']
   updateApprovedReport: ApprovedReport
+  updateCaseStatus: Case
   updateLocation: Location
   updateMissingPerson: MissingPerson
   updateOfficer: Officer
@@ -615,6 +616,10 @@ export type MutationSetRoleArgs = {
 
 export type MutationUpdateApprovedReportArgs = {
   updateApprovedReportInput: UpdateApprovedReportInput
+}
+
+export type MutationUpdateCaseStatusArgs = {
+  updateCaseInput: UpdateCaseInput
 }
 
 export type MutationUpdateLocationArgs = {
@@ -1005,6 +1010,11 @@ export type UpdateApprovedReportInput = {
   id: Scalars['Int']
 }
 
+export type UpdateCaseInput = {
+  id: Scalars['Int']
+  status: Status
+}
+
 export type UpdateLocationInput = {
   address?: InputMaybe<Scalars['String']>
   id: Scalars['Int']
@@ -1315,6 +1325,15 @@ export type CreateCommentMutation = {
   createComment: { __typename?: 'Comment'; id: number }
 }
 
+export type UpdateCaseStatusMutationVariables = Exact<{
+  updateCaseInput: UpdateCaseInput
+}>
+
+export type UpdateCaseStatusMutation = {
+  __typename?: 'Mutation'
+  updateCaseStatus: { __typename?: 'Case'; id: number }
+}
+
 export const namedOperations = {
   Query: {
     reports: 'reports',
@@ -1331,6 +1350,7 @@ export const namedOperations = {
     createApprovedReport: 'createApprovedReport',
     CreateReports: 'CreateReports',
     createComment: 'createComment',
+    updateCaseStatus: 'updateCaseStatus',
   },
 }
 
@@ -2055,4 +2075,54 @@ export type CreateCommentMutationResult =
 export type CreateCommentMutationOptions = Apollo.BaseMutationOptions<
   CreateCommentMutation,
   CreateCommentMutationVariables
+>
+export const UpdateCaseStatusDocument = /*#__PURE__*/ gql`
+  mutation updateCaseStatus($updateCaseInput: UpdateCaseInput!) {
+    updateCaseStatus(updateCaseInput: $updateCaseInput) {
+      id
+    }
+  }
+`
+export type UpdateCaseStatusMutationFn = Apollo.MutationFunction<
+  UpdateCaseStatusMutation,
+  UpdateCaseStatusMutationVariables
+>
+
+/**
+ * __useUpdateCaseStatusMutation__
+ *
+ * To run a mutation, you first call `useUpdateCaseStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCaseStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCaseStatusMutation, { data, loading, error }] = useUpdateCaseStatusMutation({
+ *   variables: {
+ *      updateCaseInput: // value for 'updateCaseInput'
+ *   },
+ * });
+ */
+export function useUpdateCaseStatusMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateCaseStatusMutation,
+    UpdateCaseStatusMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<
+    UpdateCaseStatusMutation,
+    UpdateCaseStatusMutationVariables
+  >(UpdateCaseStatusDocument, options)
+}
+export type UpdateCaseStatusMutationHookResult = ReturnType<
+  typeof useUpdateCaseStatusMutation
+>
+export type UpdateCaseStatusMutationResult =
+  Apollo.MutationResult<UpdateCaseStatusMutation>
+export type UpdateCaseStatusMutationOptions = Apollo.BaseMutationOptions<
+  UpdateCaseStatusMutation,
+  UpdateCaseStatusMutationVariables
 >

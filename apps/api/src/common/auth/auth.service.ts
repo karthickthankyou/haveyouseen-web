@@ -68,23 +68,23 @@ export class AuthService {
   async setRole(user: GetUserType, role: Role): Promise<boolean> {
     const existingRoles = user.roles || []
     if (existingRoles.includes(role)) {
-      //   throw new BadRequestException(`User already has this role. ${role}`)
       console.error(`User already has this role. ${role}`)
       return false
     }
 
     const updatedRoles = [...existingRoles, role]
+    console.log('user updatedRoles ', updatedRoles, user)
 
-    await this.firebaseService
-      .getAuth()
-      .setCustomUserClaims(user.uid, {
+    try {
+      await this.firebaseService.getAuth().setCustomUserClaims(user.uid, {
         roles: updatedRoles,
       })
-      .then((res) => {
-        console.log(`Successfully set ${JSON.stringify(res)}`)
-      })
-
-    return true
+      console.log(`Successfully set role`)
+      return true
+    } catch (err) {
+      console.log('Error setting custom user claims', err)
+      throw new Error('Could not set custom user claims')
+    }
   }
 
   async removeRole(user: GetUserType, role: Role) {

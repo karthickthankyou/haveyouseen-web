@@ -34,7 +34,7 @@ export const register = async ({
     password,
   )
   const { user } = userCredential
-
+  console.log('displayName', displayName)
   if (displayName && user) {
     await updateProfile(user, { displayName, photoURL })
     await user.reload() // Reload the user's information

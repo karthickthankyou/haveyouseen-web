@@ -1,8 +1,9 @@
-import { CreateCaseInput } from './create-case.input'
-import { InputType, PartialType } from '@nestjs/graphql'
-import { Case } from '@prisma/client'
+import { Field, InputType } from '@nestjs/graphql'
+import { $Enums, Case } from '@prisma/client'
 
 @InputType()
-export class UpdateCaseInput extends PartialType(CreateCaseInput) {
+export class UpdateCaseInput {
   id: Case['id']
+  @Field(() => $Enums.Status)
+  status: $Enums.Status
 }

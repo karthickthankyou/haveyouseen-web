@@ -26,7 +26,7 @@ const authorizeUsingAccesstoken = async (
       .then((userRecord) => userRecord)
 
     const { uid, displayName } = userData
-    console.log('uid , displayname ', uid, displayName)
+    console.log('uid , displayname, roles ', uid, displayName, data.roles)
     return { uid, displayName, roles: data.roles }
   } catch (error) {
     console.error('AuthMiddleware error: ', error)

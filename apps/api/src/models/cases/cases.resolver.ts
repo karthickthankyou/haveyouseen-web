@@ -20,6 +20,8 @@ import { PrismaService } from 'src/common/prisma/prisma.service'
 import { MissingPerson } from '../missing-people/entities/missing-person.entity'
 import { DateFilterInput, LocationFilterInput } from './dto/filter.input'
 import { GetUserType } from 'src/common/types'
+import { UpdateCaseInput } from './dto/update-case.input'
+import { BadRequestException } from '@nestjs/common'
 
 @Resolver(() => Case)
 export class CasesResolver {
@@ -54,11 +56,23 @@ export class CasesResolver {
     return this.casesService.findOne(args)
   }
 
-  //   @AllowAuthenticated()
-  //   @Mutation(() => Case)
-  //   updateCase(@Args('updateCaseInput') args: UpdateCaseInput) {
-  //     return this.casesService.update(args)
-  //   }
+  @AllowAuthenticated()
+  @Mutation(() => Case)
+  async updateCaseStatus(
+    @Args('updateCaseInput') args: UpdateCaseInput,
+    @GetUser() user: GetUserType,
+  ) {
+    const officer = user?.uid
+      ? await this.prisma.officer.findUnique({
+          where: { uid: user?.uid },
+        })
+      : null
+    if (!officer?.uid) {
+      throw new BadRequestException('You dont have officer rights.')
+    }
+
+    return this.casesService.update(args)
+  }
 
   @AllowAuthenticatedOptional()
   @Query(() => [Report])
@@ -66,16 +80,9 @@ export class CasesResolver {
     @Args('dateFilter', { nullable: true }) dateFilter: DateFilterInput,
     @Args('locationFilter')
     locationFilter: LocationFilterInput,
-    @GetUser() user: GetUserType,
   ) {
     const { end, start } = dateFilter
     const { nw_lat, nw_lng, se_lat, se_lng } = locationFilter
-
-    const officer = user?.uid
-      ? await this.prisma.officer.findUnique({
-          where: { uid: user.uid },
-        })
-      : null
 
     return this.prisma.report.findMany({
       distinct: ['caseId'],

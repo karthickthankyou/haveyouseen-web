@@ -18,16 +18,32 @@ import {
 import { PrismaService } from 'src/common/prisma/prisma.service'
 import { ApprovedReport } from '../approved-reports/entities/approved-report.entity'
 import { GetUserType } from 'src/common/types'
+import { AuthService } from 'src/common/auth/auth.service'
+import { BadRequestException } from '@nestjs/common'
 
 @Resolver(() => Officer)
 export class OfficersResolver {
   constructor(
     private readonly officersService: OfficersService,
     private readonly prisma: PrismaService,
+    private readonly auth: AuthService,
   ) {}
+
   @AllowAuthenticated()
   @Mutation(() => Officer)
-  createOfficer(@Args('createOfficerInput') args: CreateOfficerInput) {
+  async createOfficer(
+    @Args('createOfficerInput') args: CreateOfficerInput,
+    @GetUser() user: GetUserType,
+  ) {
+    const officer = await this.prisma.officer.findUnique({
+      where: { uid: user.uid },
+    })
+    if (officer?.uid) {
+      throw new BadRequestException('Officer already exists')
+    }
+    console.log('!!! officer ', officer)
+
+    await this.auth.setRole(user, 'officer')
     return this.officersService.create(args)
   }
 

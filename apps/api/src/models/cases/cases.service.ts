@@ -71,10 +71,10 @@ export class CasesService {
   }
 
   update(updateCaseInput: UpdateCaseInput) {
-    const { id, missingPerson, reports, ...data } = updateCaseInput
+    const { status, id } = updateCaseInput
     return this.prisma.case.update({
       where: { id },
-      data: data,
+      data: { status },
     })
   }
 

@@ -33,11 +33,10 @@ export const Brand = ({ type }: IBrandProps) => {
           <div className="text-xl font-black">
             Have you seen{victimName ? ' ' + victimName : ''}?
           </div>
-          <span className="text-xs">{type}</span>
+          {type ? <span className="text-xs">{`${type} app`}</span> : null}
         </div>
         <GradientText className="text-xs">
-          Portfolio project by{' '}
-          <span className="italic">Karthick Ragavendran</span>
+          Demo project by <span className="italic">Karthick Ragavendran</span>
         </GradientText>
       </div>
     </div>

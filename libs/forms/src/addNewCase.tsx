@@ -35,7 +35,7 @@ export const addNewCaseFormSchema = z.object({
   gender: z.nativeEnum(Gender),
   height: z.number(),
   weight: z.number(),
-  reports: z.array(newReportFormSchema),
+  reports: z.array(newReportFormSchema).min(1),
   contact: z.array(contactSchema).min(1),
 })
 

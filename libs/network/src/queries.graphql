@@ -167,3 +167,9 @@ mutation createComment($createCommentInput: CreateCommentInput!) {
     id
   }
 }
+
+mutation updateCaseStatus($updateCaseInput: UpdateCaseInput!) {
+  updateCaseStatus(updateCaseInput: $updateCaseInput) {
+    id
+  }
+}
